@@ -13200,6 +13200,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6171544858479489165, guid: c12a7b61b5050d61bbdc6698f0017fae, type: 3}
+      propertyPath: EnableVWBehaviorMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6205478557590010048, guid: c12a7b61b5050d61bbdc6698f0017fae, type: 3}
       propertyPath: m_IsActive
       value: 1
