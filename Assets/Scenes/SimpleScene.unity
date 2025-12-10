@@ -2985,6 +2985,11 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &575906605 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+  m_PrefabInstance: {fileID: 1857883003}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &584550942
 GameObject:
   m_ObjectHideFlags: 0
@@ -4015,6 +4020,11 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &843963925 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+  m_PrefabInstance: {fileID: 1679348679}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &858543065
 GameObject:
   m_ObjectHideFlags: 0
@@ -4773,6 +4783,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1771750894}
     m_Modifications:
     - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
       propertyPath: _topicName
       value: /tb20e/boom/g2_imu
       objectReference: {fileID: 0}
@@ -4820,10 +4834,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: boom_imu
       objectReference: {fileID: 0}
+    - target: {fileID: 7217861833006714310, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1096463064}
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1096463063}
   m_SourcePrefab: {fileID: 100100000, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
 --- !u!4 &1034752742 stripped
 Transform:
@@ -5031,6 +5055,47 @@ AimConstraint:
   m_Sources:
   - sourceTransform: {fileID: 70260436}
     weight: 1
+--- !u!1 &1096463060 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+  m_PrefabInstance: {fileID: 1034752741}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1096463063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096463060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d9f18b4518a4653b77d3f212fdd425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  _topicName: /tb20e/boom/g2_imu
+  _serializer:
+    _header:
+      _frame_id: 
+--- !u!114 &1096463064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096463060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4e1991f5057426c9a383c668909b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  filterFactor: 0.05
+  _position: {x: 0, y: 0, z: 0}
+  _velocity: {x: 0, y: 0, z: 0}
+  _acceleration: {x: 0, y: 0, z: 0}
+  _rotation: {x: 0, y: 0, z: 0, w: 0}
+  _angularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &1114136962
 GameObject:
   m_ObjectHideFlags: 0
@@ -6940,6 +7005,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 974252429}
     m_Modifications:
     - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
       propertyPath: _topicName
       value: /tb20e/arm/g2_imu
       objectReference: {fileID: 0}
@@ -6987,16 +7056,62 @@ PrefabInstance:
       propertyPath: m_Name
       value: arm_imu
       objectReference: {fileID: 0}
+    - target: {fileID: 7217861833006714310, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1679348684}
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1679348683}
   m_SourcePrefab: {fileID: 100100000, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
 --- !u!4 &1679348680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4553670595702735631, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
   m_PrefabInstance: {fileID: 1679348679}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1679348683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843963925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d9f18b4518a4653b77d3f212fdd425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  _topicName: /tb20e/arm/g2_imu
+  _serializer:
+    _header:
+      _frame_id: 
+--- !u!114 &1679348684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843963925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4e1991f5057426c9a383c668909b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  filterFactor: 0.05
+  _position: {x: 0, y: 0, z: 0}
+  _velocity: {x: 0, y: 0, z: 0}
+  _acceleration: {x: 0, y: 0, z: 0}
+  _rotation: {x: 0, y: 0, z: 0, w: 0}
+  _angularVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &1694330607
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7682,6 +7797,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1645703272}
     m_Modifications:
     - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4243967784397022645, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
       propertyPath: _topicName
       value: /tb20e/bucket/g2_imu
       objectReference: {fileID: 0}
@@ -7729,16 +7848,62 @@ PrefabInstance:
       propertyPath: m_Name
       value: bucket_imu
       objectReference: {fileID: 0}
+    - target: {fileID: 7217861833006714310, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1857883008}
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1857883007}
   m_SourcePrefab: {fileID: 100100000, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
 --- !u!4 &1857883004 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4553670595702735631, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
   m_PrefabInstance: {fileID: 1857883003}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1857883007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575906605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d9f18b4518a4653b77d3f212fdd425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  _topicName: /tb20e/bucket/g2_imu
+  _serializer:
+    _header:
+      _frame_id: 
+--- !u!114 &1857883008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575906605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4e1991f5057426c9a383c668909b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 100
+  filterFactor: 0.05
+  _position: {x: 0, y: 0, z: 0}
+  _velocity: {x: 0, y: 0, z: 0}
+  _acceleration: {x: 0, y: 0, z: 0}
+  _rotation: {x: 0, y: 0, z: 0, w: 0}
+  _angularVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &1859468813
 GameObject:
   m_ObjectHideFlags: 0
