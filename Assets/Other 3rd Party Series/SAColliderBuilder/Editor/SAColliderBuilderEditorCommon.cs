@@ -412,8 +412,8 @@ public class SAColliderBuilderEditorCommon
 			}
 			if( rigodbody != null ) {
 				rigodbody.mass = rigidbodyProperty.mass;
-				rigodbody.drag = rigidbodyProperty.drag;
-				rigodbody.angularDrag = rigidbodyProperty.angularDrag;
+				rigodbody.linearDamping = rigidbodyProperty.drag;
+				rigodbody.angularDamping = rigidbodyProperty.angularDrag;
 				rigodbody.isKinematic = rigidbodyProperty.isKinematic;
 				rigodbody.useGravity = rigidbodyProperty.useGravity;
 				rigodbody.interpolation = rigidbodyProperty.interpolation;
@@ -552,7 +552,7 @@ public class SAColliderBuilderEditorCommon
 
 		colliderProperty.convex = EditorGUILayout.Toggle( "Convex", colliderProperty.convex );
 		colliderProperty.isTrigger = EditorGUILayout.Toggle( "Is Trigger", colliderProperty.isTrigger );
-		colliderProperty.material = EditorGUILayout.ObjectField( "Physics Material", colliderProperty.material, typeof(PhysicMaterial), false ) as PhysicMaterial;
+		colliderProperty.material = EditorGUILayout.ObjectField( "Physics Material", colliderProperty.material, typeof(PhysicsMaterial), false ) as PhysicsMaterial;
 		if( (colliderOption & ColliderOption.CreateAsset) != ColliderOption.None ) {
 			colliderProperty.isCreateAsset = EditorGUILayout.Toggle( "Create Asset(4Prefab)", colliderProperty.isCreateAsset );
 		}

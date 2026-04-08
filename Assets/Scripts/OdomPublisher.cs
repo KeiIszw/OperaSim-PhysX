@@ -77,9 +77,9 @@ public class OdomPublisher : MonoBehaviour
 
             message.pose.covariance = new double[] {0.001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1000000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1000000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1000000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1000.0};
 
-            message.twist.twist.linear.x = ab.velocity.z;
-            message.twist.twist.linear.y = - ab.velocity.x;
-            message.twist.twist.linear.z = ab.velocity.y;
+            message.twist.twist.linear.x = ab.linearVelocity.z;
+            message.twist.twist.linear.y = - ab.linearVelocity.x;
+            message.twist.twist.linear.z = ab.linearVelocity.y;
             //message.twist.twist.linear.y = 0.0;
             //message.twist.twist.linear.z = 0.0;
             /*If 2D odomtetry's stablity is important linear y&z + angular x&y should be 0.0*/

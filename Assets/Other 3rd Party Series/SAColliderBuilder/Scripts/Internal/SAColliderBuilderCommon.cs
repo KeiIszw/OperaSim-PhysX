@@ -107,7 +107,7 @@ public class SAColliderBuilderCommon
 	{
 		public bool						convex						= true;
 		public bool						isTrigger					= false;
-		public PhysicMaterial			material					= null;
+		public PhysicsMaterial			material					= null;
 		public bool						isCreateAsset				= false;
 
 		public ColliderProperty ShallowCopy()
