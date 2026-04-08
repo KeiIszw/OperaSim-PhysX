@@ -57,7 +57,7 @@ public class RockObjectDetector : MonoBehaviour
         {
             var rigidbody = GetComponent<Rigidbody>();
 
-            var velocity = rigidbody.velocity.sqrMagnitude;
+            var velocity = rigidbody.linearVelocity.sqrMagnitude;
             if (velocity < 0.2 && Vector3.Distance(transform.position, pos_last_terrain_collision) < 0.1)
             {
                 manager.OnRockTerrainCollision(this.gameObject);
