@@ -2838,6 +2838,59 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &506148626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 506148627}
+  - component: {fileID: 506148628}
+  m_Layer: 0
+  m_Name: collider1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &506148627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506148626}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1137036503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &506148628
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506148626}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.05, y: 0.3, z: 1.3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &533007635
 GameObject:
   m_ObjectHideFlags: 0
@@ -5537,6 +5590,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4593972534005872362, guid: 22f873342a5bf41b592a587736f56a02, type: 3}
   m_PrefabInstance: {fileID: 8547281186884428085}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1137036502
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1137036503}
+  m_Layer: 0
+  m_Name: Collisions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1137036503
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137036502}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.88, y: 0.025, z: 0.165}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 506148627}
+  m_Father: {fileID: 1267797254}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1175561548
 GameObject:
   m_ObjectHideFlags: 0
@@ -5894,6 +5979,11 @@ ArticulationBody:
   m_Immovable: 0
   m_UseGravity: 1
   m_CollisionDetectionMode: 0
+--- !u!4 &1267797254 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2345578220987136123, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
+  m_PrefabInstance: {fileID: 1994538406}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1271373870
 GameObject:
   m_ObjectHideFlags: 0
@@ -6250,10 +6340,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86adb665e228046928572345f3e6ee56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainObjectName: Terrain
+  bucketObjectName: Bucket
   enable: 1
   particleVisualRadius: 0.05
   partileStickDistance: 0.01
+  partileRepulseDistance: 0.05
   stickForce: 20
+  repulseForce: 0
+  bucketSpawnInset: 0.2
   m_AngleOfRepose: {x: 30, y: 45}
   m_ReposeJitter: 0
   syncPeriod: 1
@@ -8907,6 +9002,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 584550943}
+    - targetCorrespondingSourceObject: {fileID: -2345578220987136123, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1137036503}
     - targetCorrespondingSourceObject: {fileID: 3100900116762357254, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
       insertIndex: 0
       addedObject: {fileID: 1034752742}
