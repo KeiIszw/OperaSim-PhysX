@@ -77,3 +77,5 @@ tb20e_軽量版.fbx
 .gemini/settings.json
 
 .DS_Store
+
+*.csproj
