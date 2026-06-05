@@ -33,6 +33,17 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         Parent
     }
 
+    /// <summary>
+    /// Float64 でpublishするオイラー角の軸。
+    /// ROS の roll-pitch-yaw は x-y-z 軸回りの回転として扱う。
+    /// </summary>
+    public enum EulerAngleAxis
+    {
+        Roll,
+        Pitch,
+        Yaw
+    }
+
     [Header("ROS")]
     [Tooltip("ROS topic name. [robot_name] is replaced with the root GameObject name.")]
     public string topicName = "[robot_name]/imu";
@@ -43,6 +54,19 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     [Min(0.001f)]
     [Tooltip("Sensor publish frequency in Hz.")]
     public float sensorFrequency = 50.0f;
+
+    [Header("Float64 Euler Angle Output")]
+    [Tooltip("Publish one selected roll/pitch/yaw angle as std_msgs/Float64.")]
+    public bool publishSelectedEulerAngle = false;
+
+    [Tooltip("Float64 topic name for the selected Euler angle. [robot_name] is replaced with the root GameObject name.")]
+    public string selectedEulerAngleTopicName = "[robot_name]/imu/angle";
+
+    [Tooltip("Euler angle axis to publish from the ROS-converted orientation.")]
+    public EulerAngleAxis selectedEulerAngleAxis = EulerAngleAxis.Pitch;
+
+    [Tooltip("False: publish radians, which is common in ROS. True: publish degrees for debugging.")]
+    public bool publishSelectedEulerAngleInDegrees = false;
 
     [Header("Mount")]
     [Tooltip("Object that the IMU is mounted on. If empty, this GameObject transform is used.")]
@@ -116,7 +140,9 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
     private ROSConnection ros;
     private ImuMsg message;
+    private Float64Msg selectedEulerAngleMessage;
     private string preprocessedTopicName;
+    private string preprocessedSelectedEulerAngleTopicName;
     private string preprocessedFrameID;
 
     private Vector3 lastPosition;
@@ -135,6 +161,7 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
         // [robot_name] は既存スクリプトと同じく root GameObject 名へ置換する。
         preprocessedTopicName = Utils.PreprocessNamespace(gameObject, topicName);
+        preprocessedSelectedEulerAngleTopicName = Utils.PreprocessNamespace(gameObject, selectedEulerAngleTopicName);
         preprocessedFrameID = Utils.PreprocessNamespace(gameObject, frameID);
 
         // covariance は対角成分だけ Inspector から指定できるようにしている。
@@ -154,6 +181,8 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(preprocessedTopicName);
+        ros.RegisterPublisher<Float64Msg>(preprocessedSelectedEulerAngleTopicName);
+        selectedEulerAngleMessage = new Float64Msg();
 
         // 初回サンプルでは差分計算ができないため、現在姿勢を基準値として保存しておく。
         GetSensorPose(out lastPosition, out lastRotation);
@@ -225,6 +254,7 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         message.linear_acceleration_covariance = CreateDiagonalCovariance(linearAccelerationCovariance);
 
         ros.Publish(preprocessedTopicName, message);
+        PublishSelectedEulerAngleIfEnabled(message.orientation);
 
         lastPosition = position;
         lastVelocity = velocity;
@@ -306,6 +336,88 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
         float inv = 1.0f / magnitude;
         return new Quaternion(q.x * inv, q.y * inv, q.z * inv, q.w * inv);
+    }
+
+    /// <summary>
+    /// sensor_msgs/Imu.orientation と同じ ROS FLU 変換済みクォータニオンから
+    /// roll-pitch-yaw を計算し、指定した 1 軸だけ std_msgs/Float64 でpublishする。
+    /// </summary>
+    private void PublishSelectedEulerAngleIfEnabled(QuaternionMsg rosOrientation)
+    {
+        if (!publishSelectedEulerAngle)
+            return;
+
+        Vector3 rollPitchYaw = QuaternionMsgToRollPitchYaw(rosOrientation);
+        double selectedAngle = GetSelectedEulerAngle(rollPitchYaw);
+
+        if (publishSelectedEulerAngleInDegrees)
+            selectedAngle *= Mathf.Rad2Deg;
+
+        selectedEulerAngleMessage.data = selectedAngle;
+        ros.Publish(preprocessedSelectedEulerAngleTopicName, selectedEulerAngleMessage);
+    }
+
+    /// <summary>
+    /// ROS の QuaternionMsg [x, y, z, w] を roll-pitch-yaw [rad] に変換する。
+    /// ここで得られる角度は ROS topic にpublishされる orientation と同じ座標系に対応する。
+    /// </summary>
+    private static Vector3 QuaternionMsgToRollPitchYaw(QuaternionMsg q)
+    {
+        NormalizeQuaternionMsg(ref q);
+
+        double sinrCosp = 2.0 * (q.w * q.x + q.y * q.z);
+        double cosrCosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+        double roll = System.Math.Atan2(sinrCosp, cosrCosp);
+
+        double sinp = 2.0 * (q.w * q.y - q.z * q.x);
+        double pitch = System.Math.Abs(sinp) >= 1.0
+            ? (sinp >= 0.0 ? System.Math.PI / 2.0 : -System.Math.PI / 2.0)
+            : System.Math.Asin(sinp);
+
+        double sinyCosp = 2.0 * (q.w * q.z + q.x * q.y);
+        double cosyCosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
+        double yaw = System.Math.Atan2(sinyCosp, cosyCosp);
+
+        return new Vector3((float)roll, (float)pitch, (float)yaw);
+    }
+
+    /// <summary>
+    /// Inspector で選ばれた軸の角度だけを取り出す。
+    /// </summary>
+    private double GetSelectedEulerAngle(Vector3 rollPitchYaw)
+    {
+        switch (selectedEulerAngleAxis)
+        {
+            case EulerAngleAxis.Roll:
+                return rollPitchYaw.x;
+            case EulerAngleAxis.Pitch:
+                return rollPitchYaw.y;
+            default:
+                return rollPitchYaw.z;
+        }
+    }
+
+    /// <summary>
+    /// QuaternionMsg を単位クォータニオンへ正規化する。
+    /// ゼロに近い場合は identity として扱う。
+    /// </summary>
+    private static void NormalizeQuaternionMsg(ref QuaternionMsg q)
+    {
+        double magnitude = System.Math.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+        if (magnitude < 1e-12)
+        {
+            q.x = 0.0;
+            q.y = 0.0;
+            q.z = 0.0;
+            q.w = 1.0;
+            return;
+        }
+
+        double inv = 1.0 / magnitude;
+        q.x *= inv;
+        q.y *= inv;
+        q.z *= inv;
+        q.w *= inv;
     }
 
     /// <summary>
