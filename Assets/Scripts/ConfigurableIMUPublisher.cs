@@ -3,6 +3,7 @@ using Unity.Robotics.Core;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using RosMessageTypes.BuiltinInterfaces;
+using RosMessageTypes.Geometry;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 
@@ -66,6 +67,26 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     [Header("Acceleration")]
     [Tooltip("True: stationary IMU publishes 0 acceleration. False: stationary IMU publishes apparent gravity (-Physics.gravity).")]
     public bool removeGravityFromAcceleration = true;
+
+    [Header("ROS Output Sign Flip")]
+    // ここでの x/y/z は Unity 座標系ではなく、To<FLU>() で変換した後の ROS topic 上の軸。
+    // Inspector の latestAcceleration / latestAngularVelocity は変換前の確認値なので、
+    // 反転後の publish 値とは軸対応が異なる点に注意する。
+    // orientation はクォータニオンなので、成分の正負を個別に反転すると姿勢として不自然になる。
+    // 姿勢の向きが合わない場合は mountRotationOffsetEuler で取り付け姿勢を補正する。
+    [Tooltip("Invert published linear_acceleration.x after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedLinearAccelerationX = false;
+    [Tooltip("Invert published linear_acceleration.y after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedLinearAccelerationY = false;
+    [Tooltip("Invert published linear_acceleration.z after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedLinearAccelerationZ = false;
+
+    [Tooltip("Invert published angular_velocity.x after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedAngularVelocityX = false;
+    [Tooltip("Invert published angular_velocity.y after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedAngularVelocityY = false;
+    [Tooltip("Invert published angular_velocity.z after Unity-to-ROS FLU conversion.")]
+    public bool invertPublishedAngularVelocityZ = false;
 
     [Header("Covariance")]
     // sensor_msgs/Imu は orientation / angular_velocity / linear_acceleration ごとに
@@ -183,8 +204,19 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         message.header.frame_id = preprocessedFrameID;
         message.header.stamp = new TimeStamp(now);
         message.orientation = latestRotation.To<FLU>();
-        message.linear_acceleration = latestAcceleration.To<FLU>();
-        message.angular_velocity = latestAngularVelocity.To<FLU>();
+
+        // 符号反転は ROS FLU 変換後に適用する。
+        // これにより Inspector の反転チェックボックスは ROS topic 上の x/y/z 軸に対応する。
+        message.linear_acceleration = ApplySignFlip(
+            latestAcceleration.To<FLU>(),
+            invertPublishedLinearAccelerationX,
+            invertPublishedLinearAccelerationY,
+            invertPublishedLinearAccelerationZ);
+        message.angular_velocity = ApplySignFlip(
+            latestAngularVelocity.To<FLU>(),
+            invertPublishedAngularVelocityX,
+            invertPublishedAngularVelocityY,
+            invertPublishedAngularVelocityZ);
 
         // covariance は publish ごとに反映する。Play中に Inspector で値を変えると、
         // 次のメッセージから下流の EKF / sensor fusion 側の重み付けを変えられる。
@@ -274,6 +306,22 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
         float inv = 1.0f / magnitude;
         return new Quaternion(q.x * inv, q.y * inv, q.z * inv, q.w * inv);
+    }
+
+    /// <summary>
+    /// ROS topic に載せる Vector3Msg の符号を、Inspector のチェックボックスに従って反転する。
+    /// Unity 座標系ではなく FLU 変換後の ROS 座標系に対して適用する。
+    /// </summary>
+    private static Vector3Msg ApplySignFlip(Vector3Msg value, bool invertX, bool invertY, bool invertZ)
+    {
+        if (invertX)
+            value.x = -value.x;
+        if (invertY)
+            value.y = -value.y;
+        if (invertZ)
+            value.z = -value.z;
+
+        return value;
     }
 
     /// <summary>
