@@ -68,8 +68,17 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     public bool removeGravityFromAcceleration = true;
 
     [Header("Covariance")]
+    // sensor_msgs/Imu は orientation / angular_velocity / linear_acceleration ごとに
+    // 3x3 の covariance 配列を持つ。ここでは Inspector で指定した 1 つの値を
+    // x, y, z の対角成分へ同じ分散値として入れる。
+    // 値を大きくすると、robot_localization などの下流フィルタはその計測を低信頼として扱う。
+    // ROS の慣例では全要素 0 は「covariance 未知」と解釈されるため、実際に EKF で
+    // 信頼度を調整したい場合は 0 ではなく用途に応じた非ゼロ値を設定する。
+    [Tooltip("Variance used on the diagonal of orientation_covariance. Larger means lower trust in orientation.")]
     public double orientationCovariance = 0.0;
+    [Tooltip("Variance used on the diagonal of angular_velocity_covariance. Larger means lower trust in gyro data.")]
     public double angularVelocityCovariance = 0.0;
+    [Tooltip("Variance used on the diagonal of linear_acceleration_covariance. Larger means lower trust in acceleration data.")]
     public double linearAccelerationCovariance = 0.0;
 
     [Header("Latest Values")]
@@ -108,6 +117,8 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         preprocessedFrameID = Utils.PreprocessNamespace(gameObject, frameID);
 
         // covariance は対角成分だけ Inspector から指定できるようにしている。
+        // sensor_msgs/Imu の covariance 配列は row-major の 3x3 行列で、
+        // [0], [4], [8] が x, y, z 軸の分散を表す。
         message = new ImuMsg
         {
             header = new HeaderMsg
@@ -174,6 +185,9 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         message.orientation = latestRotation.To<FLU>();
         message.linear_acceleration = latestAcceleration.To<FLU>();
         message.angular_velocity = latestAngularVelocity.To<FLU>();
+
+        // covariance は publish ごとに反映する。Play中に Inspector で値を変えると、
+        // 次のメッセージから下流の EKF / sensor fusion 側の重み付けを変えられる。
         message.orientation_covariance = CreateDiagonalCovariance(orientationCovariance);
         message.angular_velocity_covariance = CreateDiagonalCovariance(angularVelocityCovariance);
         message.linear_acceleration_covariance = CreateDiagonalCovariance(linearAccelerationCovariance);
@@ -264,6 +278,11 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
     /// <summary>
     /// sensor_msgs/Imu の 3x3 covariance 配列を対角値から作る。
+    /// 配列は row-major で、以下の行列を意味する。
+    /// [ value, 0,     0
+    ///   0,     value, 0
+    ///   0,     0,     value ]
+    /// 現時点では軸ごとの個別分散や軸間相関は扱わず、全軸同じ独立ノイズとして扱う。
     /// </summary>
     private static double[] CreateDiagonalCovariance(double value)
     {
