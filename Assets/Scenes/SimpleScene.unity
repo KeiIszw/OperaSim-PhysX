@@ -982,7 +982,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: 0
     upperLimit: 140
-    stiffness: 5000
+    stiffness: 10000
     damping: 50
     forceLimit: 15
     target: 0
@@ -6138,7 +6138,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: -70
     upperLimit: 100
-    stiffness: 5000
+    stiffness: 10000
     damping: 50
     forceLimit: 10000
     target: 0
@@ -6486,7 +6486,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538407}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a60fbb2e1a7a4092ac9ed8d896508af, type: 3}
   m_Name: 
@@ -7258,7 +7258,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: -130
     upperLimit: 0
-    stiffness: 5000
+    stiffness: 10000
     damping: 50
     forceLimit: 16000
     target: 0
@@ -7439,7 +7439,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538407}
   serializedVersion: 4
-  m_Mass: 1000
+  m_Mass: 10000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -7977,7 +7977,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: 0
     upperLimit: 0
-    stiffness: 5000
+    stiffness: 20000
     damping: 50
     forceLimit: 16000
     target: 0
@@ -9215,7 +9215,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: 0
     upperLimit: 120
-    stiffness: 5000
+    stiffness: 10000
     damping: 50
     forceLimit: 16000
     target: 0
@@ -9295,7 +9295,7 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: -49
     upperLimit: 78
-    stiffness: 5000
+    stiffness: 10000
     damping: 50
     forceLimit: 16000
     target: 0
