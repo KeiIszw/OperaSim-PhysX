@@ -5,9 +5,8 @@ using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using RosMessageTypes.BuiltinInterfaces;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
-using UnitySensors.Interface.Sensor;
 
-public class ConfigurableIMUPublisher : MonoBehaviour, IImuDataInterface
+public class ConfigurableIMUPublisher : MonoBehaviour
 {
     public enum VectorFrame
     {
