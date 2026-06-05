@@ -68,6 +68,15 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     [Tooltip("False: publish radians, which is common in ROS. True: publish degrees for debugging.")]
     public bool publishSelectedEulerAngleInDegrees = false;
 
+    // ここでの roll/pitch/yaw は ROS FLU 変換済み orientation から計算した角度。
+    // 取り付け方向や制御系の符号規約に合わせたい場合に、各軸の正方向を反転する。
+    [Tooltip("Invert roll sign before publishing the selected Float64 Euler angle.")]
+    public bool invertEulerRollSign = false;
+    [Tooltip("Invert pitch sign before publishing the selected Float64 Euler angle.")]
+    public bool invertEulerPitchSign = false;
+    [Tooltip("Invert yaw sign before publishing the selected Float64 Euler angle.")]
+    public bool invertEulerYawSign = false;
+
     [Header("Mount")]
     [Tooltip("Object that the IMU is mounted on. If empty, this GameObject transform is used.")]
     public Transform mountedObject;
@@ -347,7 +356,7 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         if (!publishSelectedEulerAngle)
             return;
 
-        Vector3 rollPitchYaw = QuaternionMsgToRollPitchYaw(rosOrientation);
+        Vector3 rollPitchYaw = ApplyEulerSignFlip(QuaternionMsgToRollPitchYaw(rosOrientation));
         double selectedAngle = GetSelectedEulerAngle(rollPitchYaw);
 
         if (publishSelectedEulerAngleInDegrees)
@@ -355,6 +364,22 @@ public class ConfigurableIMUPublisher : MonoBehaviour
 
         selectedEulerAngleMessage.data = selectedAngle;
         ros.Publish(preprocessedSelectedEulerAngleTopicName, selectedEulerAngleMessage);
+    }
+
+    /// <summary>
+    /// ROS座標系の roll/pitch/yaw に対して、Inspector で指定した符号反転を適用する。
+    /// Float64で出す角度だけを反転するため、sensor_msgs/Imu.orientation 自体は変更しない。
+    /// </summary>
+    private Vector3 ApplyEulerSignFlip(Vector3 rollPitchYaw)
+    {
+        if (invertEulerRollSign)
+            rollPitchYaw.x = -rollPitchYaw.x;
+        if (invertEulerPitchSign)
+            rollPitchYaw.y = -rollPitchYaw.y;
+        if (invertEulerYawSign)
+            rollPitchYaw.z = -rollPitchYaw.z;
+
+        return rollPitchYaw;
     }
 
     /// <summary>
