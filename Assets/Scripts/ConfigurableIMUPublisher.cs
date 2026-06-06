@@ -68,6 +68,11 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     [Tooltip("False: publish radians, which is common in ROS. True: publish degrees for debugging.")]
     public bool publishSelectedEulerAngleInDegrees = false;
 
+    // 選択した1軸の角度だけを、degreeなら -180..180、radianなら -pi..pi に丸める。
+    // body yaw のように 0..360 表示ではなく連続した符号付き角度で扱いたい場合に使う。
+    [Tooltip("Wrap the selected Float64 Euler angle to [-180, 180] degrees or [-pi, pi] radians before publishing.")]
+    public bool wrapSelectedEulerAngleToSignedRange = false;
+
     // ここでの roll/pitch/yaw は ROS FLU 変換済み orientation から計算した角度。
     // 取り付け方向や制御系の符号規約に合わせたい場合に、各軸の正方向を反転する。
     [Tooltip("Invert roll sign before publishing the selected Float64 Euler angle.")]
@@ -362,8 +367,27 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         if (publishSelectedEulerAngleInDegrees)
             selectedAngle *= Mathf.Rad2Deg;
 
+        if (wrapSelectedEulerAngleToSignedRange)
+            selectedAngle = WrapSelectedEulerAngleToSignedRange(selectedAngle);
+
         selectedEulerAngleMessage.data = selectedAngle;
         ros.Publish(preprocessedSelectedEulerAngleTopicName, selectedEulerAngleMessage);
+    }
+
+    /// <summary>
+    /// 選択したFloat64角度を符号付き範囲に丸める。
+    /// degree出力では -180..180、radian出力では -pi..pi にする。
+    /// </summary>
+    private double WrapSelectedEulerAngleToSignedRange(double angle)
+    {
+        double period = publishSelectedEulerAngleInDegrees ? 360.0 : 2.0 * System.Math.PI;
+        double halfPeriod = period * 0.5;
+
+        angle = (angle + halfPeriod) % period;
+        if (angle < 0.0)
+            angle += period;
+
+        return angle - halfPeriod;
     }
 
     /// <summary>

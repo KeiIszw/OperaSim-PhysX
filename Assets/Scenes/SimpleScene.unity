@@ -593,6 +593,7 @@ MonoBehaviour:
   selectedEulerAngleTopicName: /current_body_angle
   selectedEulerAngleAxis: 2
   publishSelectedEulerAngleInDegrees: 1
+  wrapSelectedEulerAngleToSignedRange: 1
   invertEulerRollSign: 0
   invertEulerPitchSign: 0
   invertEulerYawSign: 0
