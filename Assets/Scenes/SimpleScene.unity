@@ -8564,6 +8564,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1857883009}
+    - targetCorrespondingSourceObject: {fileID: 5160823431791055626, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1857883010}
   m_SourcePrefab: {fileID: 100100000, guid: 83d460bb728bf544ebb0e05f65a2e752, type: 3}
 --- !u!4 &1857883004 stripped
 Transform:
@@ -8613,7 +8616,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 575906605}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
@@ -8647,6 +8650,31 @@ MonoBehaviour:
   latestAcceleration: {x: 0, y: 0, z: 0}
   latestRotation: {x: 0, y: 0, z: 0, w: 1}
   latestAngularVelocity: {x: 0, y: 0, z: 0}
+--- !u!114 &1857883010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575906605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfec2ce018781158c04555a2f9f17529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topicName: /current_bucket_angle
+  publishFrequency: 50
+  publishInDegrees: 1
+  bucketLink: {fileID: 2014033402}
+  referenceParent: {fileID: 1679348680}
+  angleAxis: 0
+  invertAngleSign: 1
+  angleOffset: 0
+  bucketLinkRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  referenceRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  latestUnityRelativeRotation: {x: 0, y: 0, z: 0, w: 1}
+  latestRosRollPitchYaw: {x: 0, y: 0, z: 0}
+  latestPublishedAngle: 0
 --- !u!1 &1859468813
 GameObject:
   m_ObjectHideFlags: 0
