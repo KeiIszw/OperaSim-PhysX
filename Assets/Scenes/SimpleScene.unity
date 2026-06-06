@@ -5494,7 +5494,7 @@ MonoBehaviour:
   mountedObject: {fileID: 1034752742}
   referenceParent: {fileID: 119443542}
   mountPositionOffset: {x: 0, y: 0, z: 0}
-  mountRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  mountRotationOffsetEuler: {x: 0, y: 0, z: -83}
   vectorOutputFrame: 0
   orientationOutputFrame: 1
   removeGravityFromAcceleration: 0
@@ -7682,7 +7682,7 @@ MonoBehaviour:
   mountedObject: {fileID: 1679348680}
   referenceParent: {fileID: 1034752742}
   mountPositionOffset: {x: 0, y: 0, z: 0}
-  mountRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  mountRotationOffsetEuler: {x: 0, y: 0, z: 155}
   vectorOutputFrame: 0
   orientationOutputFrame: 1
   removeGravityFromAcceleration: 0
@@ -8671,7 +8671,7 @@ MonoBehaviour:
   invertAngleSign: 1
   angleOffset: 0
   bucketLinkRotationOffsetEuler: {x: 0, y: 0, z: 0}
-  referenceRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  referenceRotationOffsetEuler: {x: 0, y: 0, z: -89}
   latestUnityRelativeRotation: {x: 0, y: 0, z: 0, w: 1}
   latestRosRollPitchYaw: {x: 0, y: 0, z: 0}
   latestPublishedAngle: 0
