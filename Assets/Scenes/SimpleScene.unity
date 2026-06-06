@@ -1116,6 +1116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/thumb/cmd
   initTargetPos: 0
+  targetPositionOffsetDeg: 0
 --- !u!171741748 &210808438
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -6124,6 +6125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/blade/cmd
   initTargetPos: 0
+  targetPositionOffsetDeg: 0
 --- !u!171741748 &1267797253
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -6323,7 +6325,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/bucket/cmd
-  initTargetPos: 0
+  initTargetPos: 89
+  targetPositionOffsetDeg: -89
 --- !u!171741748 &1299540273
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -7443,7 +7446,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/boom/cmd
-  initTargetPos: 0
+  initTargetPos: -83
+  targetPositionOffsetDeg: 83
 --- !u!171741748 &1669873162
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -8255,6 +8259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/body/cmd
   initTargetPos: 0
+  targetPositionOffsetDeg: 0
 --- !u!171741748 &1801097604
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -9591,7 +9596,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/arm/cmd
-  initTargetPos: 0
+  initTargetPos: 155
+  targetPositionOffsetDeg: -155
 --- !u!171741748 &1994538416
 ArticulationBody:
   m_ObjectHideFlags: 0
@@ -9672,6 +9678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setpointTopicName: tb20e/swing/cmd
   initTargetPos: 0
+  targetPositionOffsetDeg: 0
 --- !u!171741748 &1994538418
 ArticulationBody:
   m_ObjectHideFlags: 0
