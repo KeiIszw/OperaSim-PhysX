@@ -17,6 +17,9 @@ public class JointPosController : MonoBehaviour
     [Tooltip("初期の目標角度(degree)")]
     public double initTargetPos;
 
+    [Tooltip("目標角度に加算するオフセット(degree)。ROSから受け取った角度をdeg変換した後に加算する。")]
+    public double targetPositionOffsetDeg;
+
     private ArticulationBody joint;
     private Float64Msg targetPos;
     private EmergencyStop emergencyStop;
@@ -44,7 +47,7 @@ public class JointPosController : MonoBehaviour
                 if (drive.forceLimit == 0)
                     drive.forceLimit = 100000;
 
-                drive.target = (float)initTargetPos;
+                drive.target = ApplyTargetOffset(initTargetPos);
                 joint.xDrive = drive;
             }
         }
@@ -81,8 +84,19 @@ public class JointPosController : MonoBehaviour
             return;
         targetPos = msg;
         var drive = joint.xDrive;
-        drive.target = (float)(targetPos.data * Mathf.Rad2Deg);
+        // ROSのFloat64はradとして受け取り、ArticulationDrive.target用にdegreeへ変換する。
+        // InspectorのtargetPositionOffsetDegは、そのdegree値に対するゼロ点補正として加算する。
+        drive.target = ApplyTargetOffset(targetPos.data * Mathf.Rad2Deg);
         joint.xDrive = drive;
         //Debug.Log("Joint Target Position:" + targetPos.data);
+    }
+
+    /// <summary>
+    /// 制御入力の目標角度[deg]に、Inspectorで設定したゼロ点オフセットを加える。
+    /// 実際のArticulationBodyの姿勢を書き換えず、xDrive.targetだけを補正する。
+    /// </summary>
+    private float ApplyTargetOffset(double targetDeg)
+    {
+        return (float)(targetDeg + targetPositionOffsetDeg);
     }
 }
