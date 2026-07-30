@@ -589,6 +589,7 @@ MonoBehaviour:
   topicName: /tb20e/body/imu
   frameID: 
   sensorFrequency: 200
+  publishImuMessage: 0
   publishSelectedEulerAngle: 1
   selectedEulerAngleTopicName: /current_swing_angle
   selectedEulerAngleAxis: 2
@@ -5639,6 +5640,7 @@ MonoBehaviour:
   topicName: /tb20e/boom/imu
   frameID: 
   sensorFrequency: 200
+  publishImuMessage: 0
   publishSelectedEulerAngle: 1
   selectedEulerAngleTopicName: /current_boom_angle
   selectedEulerAngleAxis: 0
@@ -7839,6 +7841,7 @@ MonoBehaviour:
   topicName: /tb20e/arm/imu
   frameID: 
   sensorFrequency: 200
+  publishImuMessage: 0
   publishSelectedEulerAngle: 1
   selectedEulerAngleTopicName: /current_arm_angle
   selectedEulerAngleAxis: 0

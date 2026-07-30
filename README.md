@@ -121,6 +121,8 @@ ROS 2 の場合
 
 現在角度を5 ms周期で配信するため、`Fixed Timestep`を従来の0.02秒から0.005秒へ変更しています。そのため、物理計算の負荷は従来設定より増加します。
 
+TB20eのbody・boom・armに設定した`ConfigurableIMUPublisher`は、角度feedback用の`Float64`だけを200 Hzで配信し、`sensor_msgs/Imu`の配信は無効にしています。両方を200 Hzで有効にするとROS TCP Connectorの送信キューが飽和し、角度feedbackの欠落や制御停止につながるためです。IMUデータも必要な場合はInspectorの`Publish Imu Message`を有効にし、ネットワーク負荷に応じてIMUまたは角度の配信周期を調整してください。
+
 > **Note**
 > 既存の`JointPosController`が購読する`/tb20e/body/cmd`、`/tb20e/boom/cmd`、`/tb20e/arm/cmd`、`/tb20e/bucket/cmd`とレバー操作指令を同時に送信しないでください。どちらも同じ`ArticulationBody.xDrive.target`を更新するため、指令が競合します。
 

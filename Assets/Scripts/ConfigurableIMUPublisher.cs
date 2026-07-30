@@ -55,6 +55,9 @@ public class ConfigurableIMUPublisher : MonoBehaviour
     [Tooltip("Sensor publish frequency in Hz.")]
     public float sensorFrequency = 50.0f;
 
+    [Tooltip("Publish the full sensor_msgs/Imu message. Disable this when the component is used only for Float64 angle feedback.")]
+    public bool publishImuMessage = true;
+
     [Header("Float64 Euler Angle Output")]
     [Tooltip("Publish one selected roll/pitch/yaw angle as std_msgs/Float64.")]
     public bool publishSelectedEulerAngle = false;
@@ -194,8 +197,10 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         };
 
         ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<ImuMsg>(preprocessedTopicName);
-        ros.RegisterPublisher<Float64Msg>(preprocessedSelectedEulerAngleTopicName);
+        if (publishImuMessage)
+            ros.RegisterPublisher<ImuMsg>(preprocessedTopicName);
+        if (publishSelectedEulerAngle)
+            ros.RegisterPublisher<Float64Msg>(preprocessedSelectedEulerAngleTopicName);
         selectedEulerAngleMessage = new Float64Msg();
 
         // 初回サンプルでは差分計算ができないため、現在姿勢を基準値として保存しておく。
@@ -267,7 +272,8 @@ public class ConfigurableIMUPublisher : MonoBehaviour
         message.angular_velocity_covariance = CreateDiagonalCovariance(angularVelocityCovariance);
         message.linear_acceleration_covariance = CreateDiagonalCovariance(linearAccelerationCovariance);
 
-        ros.Publish(preprocessedTopicName, message);
+        if (publishImuMessage)
+            ros.Publish(preprocessedTopicName, message);
         PublishSelectedEulerAngleIfEnabled(message.orientation);
 
         lastPosition = position;
