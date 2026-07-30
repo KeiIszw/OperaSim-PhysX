@@ -588,9 +588,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: /tb20e/body/imu
   frameID: 
-  sensorFrequency: 50
+  sensorFrequency: 200
   publishSelectedEulerAngle: 1
-  selectedEulerAngleTopicName: /current_body_angle
+  selectedEulerAngleTopicName: /current_swing_angle
   selectedEulerAngleAxis: 2
   publishSelectedEulerAngleInDegrees: 1
   wrapSelectedEulerAngleToSignedRange: 1
@@ -5638,7 +5638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: /tb20e/boom/imu
   frameID: 
-  sensorFrequency: 50
+  sensorFrequency: 200
   publishSelectedEulerAngle: 1
   selectedEulerAngleTopicName: /current_boom_angle
   selectedEulerAngleAxis: 0
@@ -7838,7 +7838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: /tb20e/arm/imu
   frameID: 
-  sensorFrequency: 50
+  sensorFrequency: 200
   publishSelectedEulerAngle: 1
   selectedEulerAngleTopicName: /current_arm_angle
   selectedEulerAngleAxis: 0
@@ -8833,7 +8833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topicName: /current_bucket_angle
-  publishFrequency: 50
+  publishFrequency: 200
   publishInDegrees: 1
   bucketLink: {fileID: 2014033402}
   referenceParent: {fileID: 1679348680}
@@ -9714,7 +9714,43 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -6475330663044986230, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1193411939}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2140536179}
   m_SourcePrefab: {fileID: 100100000, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}
+--- !u!114 &2140536179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994538407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f547ad62a2a8414e932d792b19b3051f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  boom:
+    topicName: /manipulated_boom_lever
+    targetArticulationBody: {fileID: 1669873162}
+    positiveDirectionSign: -1
+    fullLeverTargetSpeedDegPerSecond: 50
+  arm:
+    topicName: /manipulated_arm_lever
+    targetArticulationBody: {fileID: 1994538416}
+    positiveDirectionSign: 1
+    fullLeverTargetSpeedDegPerSecond: 50
+  bucket:
+    topicName: /manipulated_bucket_lever
+    targetArticulationBody: {fileID: 1299540273}
+    positiveDirectionSign: 1
+    fullLeverTargetSpeedDegPerSecond: 50
+  swing:
+    topicName: /manipulated_swing_lever
+    targetArticulationBody: {fileID: 1801097604}
+    positiveDirectionSign: -1
+    fullLeverTargetSpeedDegPerSecond: 50
+  commandTimeoutSeconds: 0.2
 --- !u!1 &1994538407 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 72b41df8511ff4f55ac6fed2ab8179fb, type: 3}

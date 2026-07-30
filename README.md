@@ -99,6 +99,31 @@ ROS 2 の場合
 | 建機のオドメトリ計算結果 | /(建機のns)  /odom | nav_msgs/Odometry | オドメトリ | 位置:[m]  姿勢:[-] | 初期位置を原点として算出している |
 | 建機の関節角度・角速度 | /(建機のns)  /joint_states | sensor_msgs/JointState | 角度・角速度 | 角度:[rad]  角速度:[rad/s] | effortについては次節を参照 |
 
+### TB20eのレバー入力制御
+
+`SimpleScene`と`HttpScene`のTB20eには、ROS 2のレバー操作量を受信する`Tb20eLeverController`が設定されています。操作量は`-100.0`から`100.0`に制限され、受信した値に応じて各`ArticulationBody`の`xDrive.target`を物理更新ごとに増減します。
+
+| 操作対象 | 操作指令トピック | 型 | 周期 | 値 |
+| ---- | ---- | ---- | ---- | ---- |
+| ブーム | `/manipulated_boom_lever` | `std_msgs/msg/Float64` | 50 ms | -100.0 ～ 100.0 |
+| アーム | `/manipulated_arm_lever` | `std_msgs/msg/Float64` | 50 ms | -100.0 ～ 100.0 |
+| バケット | `/manipulated_bucket_lever` | `std_msgs/msg/Float64` | 50 ms | -100.0 ～ 100.0 |
+| スイング | `/manipulated_swing_lever` | `std_msgs/msg/Float64` | 50 ms | -100.0 ～ 100.0 |
+
+| 操作対象 | 現在角度トピック | 型 | 周期 | 値 [deg] |
+| ---- | ---- | ---- | ---- | ---- |
+| ブーム | `/current_boom_angle` | `std_msgs/msg/Float64` | 5 ms | 48 ～ -83 |
+| アーム | `/current_arm_angle` | `std_msgs/msg/Float64` | 5 ms | 32 ～ 155 |
+| バケット | `/current_bucket_angle` | `std_msgs/msg/Float64` | 5 ms | -31 ～ 159 |
+| スイング | `/current_swing_angle` | `std_msgs/msg/Float64` | 5 ms | -180 ～ 180 |
+
+各操作指令のトピック名、操作方向、レバー入力が±100のときの目標角速度は、TB20eルートの`Tb20eLeverController`から軸ごとに編集できます。目標角速度の初期値は50 deg/sです。指令が0.2秒間届かない場合は、その軸の目標角度更新を停止します。
+
+現在角度を5 ms周期で配信するため、`Fixed Timestep`を従来の0.02秒から0.005秒へ変更しています。そのため、物理計算の負荷は従来設定より増加します。
+
+> **Note**
+> 既存の`JointPosController`が購読する`/tb20e/body/cmd`、`/tb20e/boom/cmd`、`/tb20e/arm/cmd`、`/tb20e/bucket/cmd`とレバー操作指令を同時に送信しないでください。どちらも同じ`ArticulationBody.xDrive.target`を更新するため、指令が競合します。
+
 ### 関節トルクセンサの有効化
 
 各ゲームオブジェクトに設定された`Joint State Publisher`スクリプトの`Enable Joint Effort Sensor`をチェックすることで、joint_statesトピックからeffort値を出力させることができます。
