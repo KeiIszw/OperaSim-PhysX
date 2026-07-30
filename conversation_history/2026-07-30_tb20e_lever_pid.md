@@ -1408,3 +1408,120 @@ actual.velocities
 特に現在のPIDはIゲインが0なので、目標付近でレバー指令が非常に小さくなり、Unity側の追従や数値的な不感帯によって誤差が残る可能性があります。ただし、ゲインを変更する前に失敗している軸を特定する必要があります。
 
 次に必要なのは、終了直後の`/joint_states`、またはcontroller状態の最後の`error.positions`と`actual.velocities`です。それが分かれば、位置未達なのか停止速度違反なのかを確定できます。
+
+## User
+
+今回tb20e_ros2に実装した機能をzx200_ros2との違いを含めてわかりやすく説明して
+
+## Assistant commentary
+
+今回追加したTB20E制御を、「ROS 2 actionからUnityのレバー操作へどう変換されるか」を軸に整理します。あわせて、参照元のZX200がどこまで同じで、TB20E向けに何を追加・変更したかをコードと設定から確認します。
+
+整理すると、ZX200とTB20Eは上位側の`FollowJointTrajectory`を共通化し、下位の機械接続だけを差し替える考え方です。ZX200は実機CAN／複数command interfaceまで含む総合パッケージ、今回のTB20EはUnityの角度topicとレバー百分率topicに特化した軽量な4軸hardware interfaceです。さらにTB20E側には通信断を前提にした安全処理を強化しています。
+
+## Assistant final
+
+一言でいうと、今回の`tb20e_ros2`は「ROS 2の関節角度軌道を、Unity上のTB20Eを動かす4本のレバー操作量へ変換するアダプター」です。
+
+```mermaid
+flowchart LR
+    A["FollowJointTrajectory action<br/>目標関節角度 [rad]"]
+    B["joint_trajectory_controller<br/>軌道生成＋PID"]
+    C["TB20E Hardware Interface<br/>符号変換・制限・安全監視"]
+    D["レバーtopic<br/>-100～100 / 20 Hz"]
+    E["Unity TB20E<br/>ArticulationBody"]
+    F["現在角度topic<br/>degree / 200 Hz"]
+
+    A --> B --> C --> D --> E
+    E --> F --> C
+    C -->|"position・velocity [rad]"| B
+```
+
+### 実装した主な機能
+
+1. **ROS 2 actionによる4軸制御**
+
+   `/tb20e_controller/follow_joint_trajectory`へ、以下の4軸の目標角度を送れます。
+
+   - `swing_joint`
+   - `boom_joint`
+   - `arm_joint`
+   - `bucket_joint`
+
+   `joint_trajectory_controller`が目標軌道と現在角度の差からPID出力を計算します。
+
+2. **PID出力をレバー百分率へ変換**
+
+   ros2_control上では`effort` command interfaceを使いますが、値は物理的なトルクではありません。TB20EではPIDの操作量を`-100～100`へ制限し、以下へ20 Hz（50 ms周期）で送ります。
+
+   - `/manipulated_boom_lever`
+   - `/manipulated_arm_lever`
+   - `/manipulated_bucket_lever`
+   - `/manipulated_swing_lever`
+
+3. **Unityの現在角度をros2_controlへ入力**
+
+   Unityから200 Hz（5 ms周期）で届く以下のdegree値をradianへ変換し、ros2_controlのposition stateとして提供します。
+
+   - `/current_boom_angle`
+   - `/current_arm_angle`
+   - `/current_bucket_angle`
+   - `/current_swing_angle`
+
+   角度差と受信時間からvelocityも計算します。旋回角は`-180～180°`の境界をまたいでも速度が跳ねないようwrap処理しています。
+
+4. **TB20E固有の角度・符号処理**
+
+   軸ごとに次を設定しています。
+
+   - 正負方向
+   - 可動角度範囲
+   - レバー出力の上限
+   - 端点で外側へ動かす指令の抑止
+
+   URDFとhardware判定で同じ関節制限値を使い、定義のずれを防いでいます。
+
+5. **通信異常時の安全停止**
+
+   TB20E実装では安全処理を特に強化しています。
+
+   - activate前に4軸すべての新しいfeedbackを要求
+   - feedback timeout検出
+   - NaN／Inf検出
+   - 角度範囲外検出
+   - 不自然な速度飛び検出
+   - 異常時は4本すべてのレバーを0へ固定
+   - 一度異常になったら自動復帰せず、再activate／launch再起動を要求
+
+   これは、通信復帰直後に古い軌道へ突然追従して機体が動くことを防ぐためです。
+
+### ZX200との違い
+
+| 項目 | ZX200 | 今回のTB20E |
+|---|---|---|
+| 主な対象 | 実機ZX200とシミュレータ | Unity上のTB20E |
+| 機械との接続 | 実機では`excavator_com3_ros`経由でCAN通信 | ROS TCPのFloat64 topic |
+| 下位指令 | バルブ開度・速度・位置系など複数構成 | 4本のレバー百分率`-100～100` |
+| feedback | 実機／シミュレータ用hardware interfaceから関節状態 | 4本の`/current_*_angle` |
+| 制御軸 | hardware側は`bucket_end_joint`を含む構成もある | swing・boom・arm・bucketの4軸 |
+| command interface | effort、velocity、Unity用positionなど複数 | effort型PID出力をレバー量として使用 |
+| パッケージ範囲 | bringup、description、MoveIt、navigation、実機制御を含む | `tb20e_control`中心の小規模構成 |
+| 単位変換 | 接続先hardwareごとの状態形式 | degree受信→radian変換を明示 |
+| 通信断対策 | 実機システム全体の運用を前提 | feedback監視と全軸fault latchを内蔵 |
+| 起動順 | 実機・CAN・controllerなど構成依存 | Unityで角度配信開始後にROS controller起動 |
+
+ZX200の公開構成は、実機とシミュレータの両方を扱い、effort／velocity interfaceやMoveItまで含む総合的なものです。[pwri-opera/zx200_ros2](https://github.com/pwri-opera/zx200_ros2) TB20Eではこの上位構造を参考にしながら、接続部分をUnityのレバーtopic仕様へ置き換えています。
+
+### 共通している部分
+
+ZX200とTB20Eの上位アプリケーションから見た使い方はほぼ同じです。
+
+- `ros2_control`を使用
+- `joint_trajectory_controller`を使用
+- `FollowJointTrajectory` actionで目標姿勢を指定
+- PIDで関節角度を追従
+- `/joint_states`で現在状態を確認
+
+したがって、将来的にMoveItや自律施工アプリケーションを接続するとき、上位側はZX200と似た方法でTB20Eを扱えます。
+
+大きな違いは、ZX200ではPID出力の先が実機のバルブ／CAN系であるのに対し、TB20EではUnityのレバーtopicになっている点です。
