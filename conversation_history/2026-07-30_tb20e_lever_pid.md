@@ -1525,3 +1525,305 @@ ZX200とTB20Eの上位アプリケーションから見た使い方はほぼ同�
 したがって、将来的にMoveItや自律施工アプリケーションを接続するとき、上位側はZX200と似た方法でTB20Eを扱えます。
 
 大きな違いは、ZX200ではPID出力の先が実機のバルブ／CAN系であるのに対し、TB20EではUnityのレバーtopicになっている点です。
+
+## User
+
+zx200_ros2 では ros2 actionで制御する感じですか？
+
+## Assistant commentary
+
+はい。ZX200も上位側は`FollowJointTrajectory` actionで制御する構成です。ただし通常はactionを手入力するより、MoveItが軌道を生成してcontrollerのactionへ送る使い方が中心です。実際のcontroller名と、実機・Unityでの下位接続の違いを設定から確認します。
+
+## Assistant final
+
+はい。`zx200_ros2`も最終的には`control_msgs/action/FollowJointTrajectory`で作業機を制御する構成です。
+
+通常の流れは次のとおりです。
+
+```text
+RViz／MoveItで目標姿勢を指定
+        ↓
+MoveItが関節軌道を計画
+        ↓
+FollowJointTrajectory action
+        ↓
+joint_trajectory_controller
+        ↓
+ZX200 hardware interface
+        ↓
+バルブ開度・速度指令
+        ↓
+excavator_com3_ros → CAN → 実機
+```
+
+公開READMEでも、RVizの`Plan & Execute`で生成した軌道をcontrollerへ送り、実機ではeffortまたはvelocity command interfaceを使用する構成が説明されています。[pwri-opera/zx200_ros2](https://github.com/pwri-opera/zx200_ros2)
+
+MoveItを使わず、TB20Eと同様にCLIからactionを直接送ることもできます。まず、起動中のaction名を確認します。
+
+```bash
+ros2 action list -t | grep follow_joint_trajectory
+```
+
+表示されたactionへ送ります。
+
+```bash
+ros2 action send_goal --feedback \
+  <表示されたaction名> \
+  control_msgs/action/FollowJointTrajectory \
+  "{trajectory: {joint_names: [swing_joint, boom_joint, arm_joint, bucket_joint], points: [{positions: [0.0, -0.35, 1.40, 0.52], velocities: [0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 20}}]}}"
+```
+
+TB20Eとの関係は次のとおりです。
+
+| 段階 | ZX200 | TB20E |
+|---|---|---|
+| 上位指令 | `FollowJointTrajectory` | `FollowJointTrajectory` |
+| 軌道制御 | `joint_trajectory_controller` | `joint_trajectory_controller` |
+| PID出力先 | effort／velocity hardware interface | レバー百分率hardware interface |
+| 最終指令 | バルブ開度・速度→CAN | `/manipulated_*_lever`→Unity |
+| feedback | 実機またはZX200シミュレータ | `/current_*_angle` |
+
+つまり、上位側の操作方法はほぼ同じです。違うのはcontrollerより下で、ZX200は実機のバルブ／CAN系へつながり、TB20EはUnityのレバーtopicへつながります。
+
+## User
+
+topic通信も使いますか？
+
+## Assistant commentary
+
+はい。ZX200は「目標軌道はaction、機械との入出力や状態配信はtopic」という併用構成です。actionだけで全通信を行うわけではありません。TB20Eも同じ分離ですが、下位topicの型と接続先が異なります。
+
+## Assistant final
+
+はい。ZX200はactionとtopicの両方を使います。
+
+役割分担は次のようになります。
+
+| 通信 | 用途 |
+|---|---|
+| Action | 複数関節の軌道を送り、進捗feedbackや成功・失敗結果を受け取る |
+| Topic | 現在角度・速度の配信、バルブ開度や速度指令など、連続的な機械入出力 |
+
+```text
+MoveIt／ユーザープログラム
+        │
+        │ FollowJointTrajectory action
+        ▼
+joint_trajectory_controller
+        │
+        │ command interface
+        ▼
+ZX200 hardware interface
+        │
+        ├─ 指令topic → excavator_com3_ros → CAN → 実機
+        └─ 状態topic ← excavator_com3_ros ← CAN ← 実機
+
+controller_manager
+        └─ /joint_states topic → MoveIt・RViz・監視ノード
+```
+
+ActionもROS内部では複数の通信要素を使いますが、利用者からは「途中feedbackと最終resultを持つ長時間処理」として扱います。
+
+`joint_trajectory_controller`には、actionとは別にtrajectory topicへ軌道を送る方法もあります。
+
+```bash
+ros2 topic pub --once \
+  /<controller名>/joint_trajectory \
+  trajectory_msgs/msg/JointTrajectory \
+  "{joint_names: [...], points: [...]}"
+```
+
+ただしtopic経由ではactionのようなgoal受理、途中feedback、成功・失敗resultを取得できません。そのため通常の自律制御やMoveIt連携では`FollowJointTrajectory` actionを使います。[Joint Trajectory Controller](https://control.ros.org/humble/doc/ros2_controllers/joint_trajectory_controller/doc/userdoc.html)
+
+TB20Eとの比較は次のとおりです。
+
+| 用途 | ZX200 | TB20E |
+|---|---|---|
+| 目標軌道 | `FollowJointTrajectory` action | `FollowJointTrajectory` action |
+| 下位操作指令 | バルブ開度・速度系topic | `/manipulated_*_lever` |
+| 現在状態 | 実機状態系topic | `/current_*_angle` |
+| 共通状態出力 | `/joint_states` | `/joint_states` |
+
+したがって、「actionかtopicのどちらか」ではなく、上位軌道制御にaction、周期的な機械通信にtopicを使い分ける構成です。
+
+## User
+
+zx200の制御をわかりやすく教えて
+
+## Assistant commentary
+
+ZX200固有のcontroller名、hardware interface、実機／Unity経路を混同しないよう、公開`zx200_ros2`の構成を確認してから、上位指令から油圧ショベルが動くまでを一本の流れで説明します。リポジトリ調査にはGitHubスキルを使います。
+
+## User
+
+Canより上位の部分を教えて
+
+## Assistant commentary
+
+了解です。CANフレームや車載ECUの中身ではなく、「目標姿勢を作る側から、CANへ渡す直前まで」のROS 2制御系に絞ります。MoveIt、action、controller、hardware interface、`excavator_com3_ros`の役割分担を説明します。
+
+公開コードで確認できました。デフォルトは`effort`モード、制御周期は100 Hz、controllerは`upper_arm_controller`です。hardware interfaceは現在状態を`/zx200/joint_states`から受け、PID結果を`com3_msgs/JointCmd`の`/zx200/front_cmd`へ出します。ここまでがCANより上位です。
+
+## Assistant final
+
+CANより上位のZX200制御は、「目標姿勢を関節軌道へ変換し、各関節のバルブ操作量または速度指令を計算する部分」です。
+
+```mermaid
+flowchart LR
+    A["ユーザー／自律施工アプリ"]
+    B["MoveIt move_group<br/>経路・軌道計画"]
+    C["FollowJointTrajectory action"]
+    D["upper_arm_controller<br/>軌道補間＋PID・100 Hz"]
+    E["zx200_control<br/>hardware interface"]
+    F["/zx200/front_cmd<br/>com3_msgs/JointCmd"]
+    G["excavator_com3_ros"]
+
+    H["/zx200/joint_states<br/>現在角度・速度"]
+
+    A --> B --> C --> D --> E --> F --> G
+    G --> H --> E
+    E -->|"position・velocity state"| D
+```
+
+`excavator_com3_ros`より下でROSメッセージがCANへ変換されます。ここではその直前までを説明します。
+
+### 1. 目標姿勢を作る
+
+通常はRVizまたは自律施工プログラムから「この姿勢へ動かしたい」という目標をMoveItへ渡します。
+
+MoveItの`move_group`は次を使って、衝突しない関節軌道を計画します。
+
+- ZX200のURDF
+- SRDFのplanning group
+- 関節可動範囲
+- OMPLなどのplanner
+- 現在の関節角度
+
+この段階の出力は、時刻ごとの関節角度を並べたtrajectoryです。
+
+### 2. Actionでcontrollerへ送る
+
+MoveItは計画したtrajectoryを、次の`FollowJointTrajectory` actionへ送ります。
+
+```text
+/zx200/upper_arm_controller/follow_joint_trajectory
+```
+
+`vehicle.launch.py`が全体を`zx200` namespaceで起動し、MoveItの設定ではcontroller名が`upper_arm_controller`、action namespaceが`follow_joint_trajectory`になっています。
+
+制御対象は次の5軸です。
+
+- `swing_joint`
+- `boom_joint`
+- `arm_joint`
+- `bucket_joint`
+- `bucket_end_joint`
+
+MoveItを使わず、ユーザープログラムや`ros2 action send_goal`から直接送ることもできます。その場合は経路計画や衝突回避を送信側が考える必要があります。
+
+### 3. `upper_arm_controller`が軌道を追従する
+
+`upper_arm_controller`の実体は`joint_trajectory_controller/JointTrajectoryController`です。
+
+100 Hzで以下を繰り返します。
+
+1. trajectoryから現在時刻の目標角度・目標速度を計算
+2. hardware interfaceから現在角度・速度を取得
+3. 目標と現在の誤差を計算
+4. PIDで操作量を計算
+5. hardware interfaceのcommand interfaceへ書き込む
+
+デフォルト起動は`effort`モードです。
+
+```bash
+ros2 launch zx200_bringup vehicle.launch.py \
+  command_interface_name:=effort
+```
+
+速度指令で制御する場合は`velocity`を選びます。
+
+```bash
+ros2 launch zx200_bringup vehicle.launch.py \
+  command_interface_name:=velocity
+```
+
+| モード | controllerの出力 |
+|---|---|
+| `effort` | PIDで計算したバルブ操作量相当 |
+| `velocity` | PIDで計算した関節速度指令 |
+
+ここでいう`effort`は厳密な関節トルクというより、ZX200の下位制御へ渡す操作量として使われています。
+
+### 4. Hardware interfaceがROS topicへ変換する
+
+`zx200_control`にはモード別のhardware pluginがあります。
+
+| モード | Plugin |
+|---|---|
+| effort | `Zx200UpperArmEffortHardware` |
+| velocity | `Zx200UpperArmVelocityHardware` |
+| Unity | `Zx200UpperArmPositionUnityHardware` |
+
+実機用hardware interfaceの役割は、ros2_control内部の配列とROS topicを相互変換することです。
+
+入力:
+
+```text
+/zx200/joint_states
+sensor_msgs/msg/JointState
+```
+
+ここから各軸のpositionとvelocityを読み、`upper_arm_controller`へ返します。
+
+出力:
+
+```text
+/zx200/front_cmd
+com3_msgs/msg/JointCmd
+```
+
+effortモードでは`JointCmd.effort`、velocityモードでは`JointCmd.velocity`へcontroller出力を格納してpublishします。
+
+### 5. `excavator_com3_ros`へ渡す
+
+`/zx200/front_cmd`を`excavator_com3_ros`が受け取ります。CANより上位のROS制御はここまでです。
+
+```text
+upper_arm_controller
+    ↓ PID出力
+zx200_control hardware interface
+    ↓ /zx200/front_cmd
+excavator_com3_ros
+    ↓ ここからCAN変換
+ZX200車載コントローラ
+```
+
+逆方向では、実機から得た関節角度・速度が`/zx200/joint_states`としてhardware interfaceへ戻り、PIDとMoveItへfeedbackされます。
+
+### ActionとTopicの役割
+
+| 通信 | 内容 | 頻度・性質 |
+|---|---|---|
+| Action | 軌道全体、feedback、成功・失敗 | 1回の動作単位 |
+| `/zx200/front_cmd` | 各関節の操作量・速度 | controller周期で連続 |
+| `/zx200/joint_states` | 現在角度・速度 | 連続feedback |
+
+つまり、ZX200ではactionが「どこへどう動くか」を伝え、topicが「今この瞬間にどれだけ操作するか」と「現在どこにいるか」を伝えます。
+
+公開コード上の対応箇所は、[MoveIt controller設定](https://github.com/pwri-opera/zx200_ros2/blob/main/zx200_moveit_config/config/moveit_controllers.yaml)、[effort controller設定](https://github.com/pwri-opera/zx200_ros2/blob/main/zx200_moveit_config/config/ros2_effort_controllers.yaml)、[effort hardware interface](https://github.com/pwri-opera/zx200_ros2/blob/main/zx200_control/src/upper_arm_effort_hardware.cpp)です。
+
+## ユーザー
+
+PID制御でも動作の速度は指定できるか？
+
+## アシスタント
+
+指定できます。ただし、PIDゲインで速度を指定するのではなく、軌道の時間や速度を指定し、PIDはその軌道へ追従させます。
+
+`FollowJointTrajectory`では、主に`time_from_start`で到達時間を指定する方法と、軌道点の`velocities`を指定する方法があります。同じ角度まで動かす場合、`time_from_start: 5秒`より`10秒`の方が基本的に遅い動作になります。複数の軌道点と速度を与えれば、区間ごとの速度も設計できます。
+
+一方、P・I・Dゲインは速度指令そのものではありません。ゲインを上げると応答が速くなる場合がありますが、振動、オーバーシュート、操作量飽和を招くため、速度調整の手段として使うべきではありません。
+
+実際の速度は、軌道時間に加えて、effort上限、油圧系の能力、CAN側の指令制限、Unity側のArticulation Body設定などにも制限されます。要求した軌道が機械の能力を超えると、PIDが追従できず、最終角度へ近づいていても`goal_time_tolerance`超過でABORTEDになることがあります。
+
+`velocities`をすべて0にすると「全区間を速度0で動かす」という意味ではなく、単一終点の場合は通常、終点で速度0になる軌道として補間されます。
