@@ -301,7 +301,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: -45.01362, y: -89.98858, z: 104.25771}
+  m_RotationOffset: {x: -45.013626, y: -89.98856, z: 104.257706}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 1, y: 1, z: 0}
@@ -1090,7 +1090,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: -79.829575, y: -147.44571, z: -122.97141}
+  m_RotationOffset: {x: -79.82961, y: -147.4457, z: -122.97145}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 0, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -1891,7 +1891,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: 44.59229, y: 92.91475, z: 57.174603}
+  m_RotationOffset: {x: 44.592308, y: 92.91475, z: 57.17462}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 1, y: 1, z: 0}
@@ -2420,7 +2420,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: 0.00013947478, y: -0.00019311893, z: 0.00007510181}
-  m_RotationOffset: {x: 48.853146, y: 86.845245, z: -127.24917}
+  m_RotationOffset: {x: 48.853115, y: 86.845245, z: -127.24918}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -2661,7 +2661,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0.00004291532, y: -0.000064372995, z: 0.000032186494}
-  m_RotationOffset: {x: 46.047806, y: 90.056816, z: 106.45638}
+  m_RotationOffset: {x: 46.047825, y: 90.05682, z: 106.456375}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -4161,7 +4161,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: 0, z: 0}
-  m_RotationOffset: {x: -43.75617, y: 89.96303, z: -73.23552}
+  m_RotationOffset: {x: -43.756187, y: 89.963036, z: -73.23553}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 0, z: 0}
   m_WorldUpVector: {x: 1, y: 0, z: 1}
@@ -4551,7 +4551,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: -79.829575, y: 32.55427, z: -122.97142}
+  m_RotationOffset: {x: -79.82961, y: 32.554306, z: -122.971466}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 0, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -5570,7 +5570,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: 44.98642, y: 90.011444, z: 104.27389}
+  m_RotationOffset: {x: 44.98641, y: 90.011444, z: 104.27389}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 1, y: 1, z: 0}
@@ -6173,7 +6173,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0, y: -0, z: -0}
-  m_RotationOffset: {x: -52.873066, y: 90.008965, z: 162.17441}
+  m_RotationOffset: {x: -52.873062, y: 90.00897, z: 162.17441}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -6253,7 +6253,7 @@ AimConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_RotationAtRest: {x: -0.00002145766, y: -0, z: 0}
-  m_RotationOffset: {x: -37.126972, y: 89.9932, z: -17.81435}
+  m_RotationOffset: {x: -37.126987, y: 89.9932, z: -17.814348}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 1, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}
@@ -6480,7 +6480,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538409}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
@@ -7605,7 +7605,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538411}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
@@ -8419,7 +8419,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538413}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
@@ -9769,7 +9769,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538410}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
@@ -10110,22 +10110,22 @@ MonoBehaviour:
     topicName: /manipulated_boom_lever
     targetArticulationBody: {fileID: 1669873162}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 100
   arm:
     topicName: /manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 100
   bucket:
     topicName: /manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 100
   swing:
     topicName: /manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 100
   commandTimeoutSeconds: 0.2
 --- !u!1001 &8547281186884428085
 PrefabInstance:
