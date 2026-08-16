@@ -586,7 +586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /tb20e/body/imu
+  topicName: /tb20e/swing/imu
   frameID: 
   sensorFrequency: 100
   publishImuMessage: 0
@@ -6485,7 +6485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/bucket/cmd
+  setpointTopicName: /tb20e/bucket/cmd
   initTargetPos: 89
   targetPositionOffsetDeg: -89
 --- !u!171741748 &1299540273
@@ -7610,7 +7610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/boom/cmd
+  setpointTopicName: /tb20e/boom/cmd
   initTargetPos: -83
   targetPositionOffsetDeg: 83
 --- !u!171741748 &1669873162
@@ -8424,7 +8424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/body/cmd
+  setpointTopicName: /tb20e/swing/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &1801097604
@@ -9774,7 +9774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/arm/cmd
+  setpointTopicName: /tb20e/arm/cmd
   initTargetPos: 155
   targetPositionOffsetDeg: -155
 --- !u!171741748 &1994538416
@@ -9855,7 +9855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/swing/cmd
+  setpointTopicName: /tb20e/boom_swing/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &1994538418
