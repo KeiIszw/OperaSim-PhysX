@@ -10110,22 +10110,22 @@ MonoBehaviour:
     topicName: /manipulated_boom_lever
     targetArticulationBody: {fileID: 1669873162}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 100
+    fullLeverTargetSpeedDegPerSecond: 50
   arm:
     topicName: /manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 100
+    fullLeverTargetSpeedDegPerSecond: 50
   bucket:
     topicName: /manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 100
+    fullLeverTargetSpeedDegPerSecond: 80
   swing:
     topicName: /manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 100
+    fullLeverTargetSpeedDegPerSecond: 50
   commandTimeoutSeconds: 0.2
 --- !u!1001 &8547281186884428085
 PrefabInstance:
