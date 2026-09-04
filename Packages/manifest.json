@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.frj.unity-sensors": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Assets/UnitySensors#master",
     "com.frj.unity-sensors-ros": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Assets/UnitySensorsROS#master",
     "com.unity.ai.navigation": "1.1.6",
     "com.unity.animation.rigging": "1.2.1",

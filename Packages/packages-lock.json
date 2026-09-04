@@ -8,13 +8,12 @@
       "url": "https://packages.unity.com"
     },
     "com.frj.unity-sensors": {
-      "version": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Assets/UnitySensors#master",
+      "version": "file:com.frj.unity-sensors",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.unity.burst": "1.6.6"
-      },
-      "hash": "b1a50503bb38017f902cb232b489de2de334d62b"
+      }
     },
     "com.frj.unity-sensors-ros": {
       "version": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Assets/UnitySensorsROS#master",
