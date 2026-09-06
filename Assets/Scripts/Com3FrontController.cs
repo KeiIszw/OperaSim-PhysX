@@ -55,6 +55,7 @@ public class Com3FrontController : MonoBehaviour
         joints_dt = new Dictionary<string, double>();
         foreach (var joint in this.GetComponentsInChildren<ArticulationBody>())
         {
+            if (Tb20eLeverController.Owns(joint)) continue;
             var ujoint = joint.GetComponent<UrdfJoint>();
             var jointtype = joint.GetComponent<Com3.ControlTypeAnnotation>();
             var jointdt = joint.GetComponent<DeadTime>();
@@ -116,6 +117,7 @@ public class Com3FrontController : MonoBehaviour
                 if (joints_dt.ContainsKey(currentCmd.joint_name[i]))  
                 {
                     var joint = joints[currentCmd.joint_name[i]];
+                if (Tb20eLeverController.Owns(joint.joint)) continue;
                     ArticulationDrive drive = joint.joint.xDrive;
                     switch (joint.jointtype.GetControlType())
                     {
@@ -131,6 +133,7 @@ public class Com3FrontController : MonoBehaviour
                 else
                 {
                     var joint = joints[currentCmd.joint_name[i]];
+                if (Tb20eLeverController.Owns(joint.joint)) continue;
                     ArticulationDrive drive = joint.joint.xDrive;
                     switch (joint.jointtype.GetControlType())
                     {
@@ -175,6 +178,7 @@ public class Com3FrontController : MonoBehaviour
                     return;
                 }
                 var joint = joints[currentCmd.joint_name[i]];
+                if (Tb20eLeverController.Owns(joint.joint)) continue;
                 var queue = inputJointsQueue[currentCmd.joint_name[i]];
 
                 // データ取り出し

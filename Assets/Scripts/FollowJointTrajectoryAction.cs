@@ -35,6 +35,7 @@ public class FollowJointTrajectoryAction : MonoBehaviour
         jointArticulationBodies = new Dictionary<string, ArticulationBody>();
         foreach (var joint in this.GetComponentsInChildren<ArticulationBody>())
         {
+            if (Tb20eLeverController.Owns(joint)) continue;
             var ujoint = joint.GetComponent<UrdfJoint>();
             if (ujoint)
             {
@@ -56,6 +57,7 @@ public class FollowJointTrajectoryAction : MonoBehaviour
             for (int i = 0; i < initialPoseObjects.Count; i++)
             {
                 var body = initialPoseObjects[i].GetComponent<ArticulationBody>();
+                if (Tb20eLeverController.Owns(body)) continue;
                 ArticulationDrive drive = body.xDrive;
                 drive.target = initialPoseValues[i];
                 body.xDrive = drive;
@@ -75,7 +77,8 @@ public class FollowJointTrajectoryAction : MonoBehaviour
         currentPose = trajectory;
         for (int i = 0; i < currentPose.name.Length; i++)
         {
-            var joint = jointArticulationBodies[currentPose.name[i]];
+            if (!jointArticulationBodies.TryGetValue(currentPose.name[i], out var joint)
+                || Tb20eLeverController.Owns(joint)) continue;
             ArticulationDrive drive = joint.xDrive;
             drive.target = (float)currentPose.position[i] * Mathf.Rad2Deg;
             joint.xDrive = drive;

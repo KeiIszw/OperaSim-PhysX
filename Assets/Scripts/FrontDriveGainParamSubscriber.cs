@@ -64,7 +64,7 @@ public class FrontDriveGainParamSubscriber : MonoBehaviour
 
         foreach (var ab in targetJoints)
         {
-            if (ab == null) continue;
+            if (ab == null || Tb20eLeverController.Owns(ab)) continue;
 
             // ArticulationDrive は struct。コピーして編集→戻す必要あり。
             var drive = ab.xDrive;
