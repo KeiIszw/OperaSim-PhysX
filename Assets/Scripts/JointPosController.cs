@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
@@ -35,6 +35,8 @@ public class JointPosController : MonoBehaviour
         joint = this.GetComponent<ArticulationBody>();
         targetPos = new Float64Msg();
 
+        if (Tb20eLeverController.Owns(joint)) yield break;
+
         if (joint)
         {
             if (joint.GetComponent<Com3.ControlTypeAnnotation>() == null)
@@ -61,6 +63,7 @@ public class JointPosController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Tb20eLeverController.Owns(joint)) return;
         if (emergencyStop && emergencyStop.isEmergencyStop)
         {
             if (currentEmergencyStop == false)
@@ -80,6 +83,7 @@ public class JointPosController : MonoBehaviour
 
     void ExecuteJointPosControl(Float64Msg msg)
     {
+        if (Tb20eLeverController.Owns(joint)) return;
         if (emergencyStop && emergencyStop.isEmergencyStop)
             return;
         targetPos = msg;

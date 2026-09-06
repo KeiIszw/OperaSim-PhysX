@@ -101,7 +101,7 @@ ROS 2 の場合
 
 ### TB20eのレバー入力制御
 
-`SimpleScene`と`HttpScene`のTB20eには、ROS 2のレバー操作量を受信する`Tb20eLeverController`が設定されています。操作量は`-100.0`から`100.0`に制限され、受信した値に応じて各`ArticulationBody`の`xDrive.target`を物理更新ごとに増減します。
+`SimpleScene`と`HttpScene`のTB20eには、ROS 2のレバー操作量を受信する`Tb20eLeverController`が設定されています。操作量は`-100.0`から`100.0`に制限され、入力を不感帯・むだ時間・一次遅れに通し、各`ArticulationBody`の`xDrive.targetVelocity`へ適用します。`stiffness=0`として位置サーボと目標角度の積み上げを廃止しました。
 
 | 操作対象 | 操作指令トピック | 型 | 周期 | 値 |
 | ---- | ---- | ---- | ---- | ---- |
@@ -117,14 +117,29 @@ ROS 2 の場合
 | バケット | `/current_bucket_angle` | `std_msgs/msg/Float64` | 5 ms | -31 ～ 159 |
 | スイング | `/current_swing_angle` | `std_msgs/msg/Float64` | 5 ms | -180 ～ 180 |
 
-各操作指令のトピック名、操作方向、レバー入力が±100のときの目標角速度は、TB20eルートの`Tb20eLeverController`から軸ごとに編集できます。目標角速度の初期値は50 deg/sです。指令が0.2秒間届かない場合は、その軸の目標角度更新を停止します。
+各操作指令のトピック名と以下のモデルパラメータを、TB20eルートの`Tb20eLeverController`から軸ごとに編集できます。
+
+| パラメータ | 意味・初期値 |
+| ---- | ---- |
+| `fullLeverTargetSpeedDegPerSecond` | 正レバー100%での無負荷速度。既存scene値を継承（SimpleSceneはboom/arm/swing 50、bucket 80 deg/s） |
+| `negativeSpeedRatio` | 負レバー側の最大速度倍率。初期値1 |
+| `deadbandPercent` | 不感帯。外側を残りのレバー範囲で線形に再スケール。初期値0 |
+| `deadTimeSeconds` | レバー入力のむだ時間。0～5秒、初期値0 |
+| `responseTimeSeconds` | 流量指令の一次遅れ時定数。初期値0（追加の遅れなし） |
+| `velocityResistance` | 速度差に対する駆動トルク係数。`xDrive.damping`に設定。未校正の仮値10000 |
+
+これは実測未校正のレバー→速度・油圧抵抗の近似です。位置フィードバックはROS側だけが担当します。UnityのForce型Driveは速度差に比例するトルクを発生し、sceneの`forceLimit`で飽和します。速度サーボ相当の作用は残りますが、位置目標を追いかける制御はありません。`velocityResistance=0`では抵抗だけでなく駆動力もゼロになります。中立時は速度指令が0となり抵抗で減速しますが、厳密な位置保持・油圧ロックではなく荷重によるドリフトがあり得ます。重力・慣性・接触・関節制限は引き続きPhysXが計算します。追加の`linearDamping`・`angularDamping`・`jointFriction`は対象4軸で0にします。
+
+指令が0.2秒間届かない場合、無効値受信、非常停止、コンポーネント無効化では、速度指令と遅延履歴を即座に0へ戻します（物体の速度を瞬時に0へ書き換える処理ではありません）。通常のレバー中立には設定したむだ時間・一次遅れが適用されます。関節端で位置目標を蓄積しないため、逆レバーには設定した入力応答に従って反応します。
+
+実機ログ取得後は、各軸・正負方向のレバー段階入力で不感帯、定常速度、開始遅延、立ち上がり・停止を同定してください。初期値はTB20eの実測値ではありません。共有ポンプの流量分配、シリンダ姿勢による速度変化、圧力・バルブ非線形性は未モデル化で、質量・慣性・力上限も未校正のため、負荷応答や実機用PIDゲインの妥当性をこのモデルだけで判断できません。
 
 現在角度を5 ms周期で配信するため、`Fixed Timestep`を従来の0.02秒から0.005秒へ変更しています。そのため、物理計算の負荷は従来設定より増加します。
 
 TB20eのbody・boom・armに設定した`ConfigurableIMUPublisher`は、角度feedback用の`Float64`だけを200 Hzで配信し、`sensor_msgs/Imu`の配信は無効にしています。両方を200 Hzで有効にするとROS TCP Connectorの送信キューが飽和し、角度feedbackの欠落や制御停止につながるためです。IMUデータも必要な場合はInspectorの`Publish Imu Message`を有効にし、ネットワーク負荷に応じてIMUまたは角度の配信周期を調整してください。
 
 > **Note**
-> 既存の`JointPosController`が購読する`/tb20e/body/cmd`、`/tb20e/boom/cmd`、`/tb20e/arm/cmd`、`/tb20e/bucket/cmd`とレバー操作指令を同時に送信しないでください。どちらも同じ`ArticulationBody.xDrive.target`を更新するため、指令が競合します。
+> `Tb20eLeverController`が有効な対象軸は、`JointPosController`、`FollowJointTrajectoryAction`、`Com3FrontController`、`FrontDriveGainParamSubscriber`の操作対象から除外します。これらの初期化による位置サーボ復活・指令競合を防ぎます。従来の位置制御に戻す場合は、Play停止後にレバーコンポーネントを無効化し、Driveゲインを設定して再起動してください。
 
 ### 関節トルクセンサの有効化
 

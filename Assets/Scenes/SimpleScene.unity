@@ -6513,8 +6513,8 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: -120
     upperLimit: 70
-    stiffness: 10000000
-    damping: 500000
+    stiffness: 0
+    damping: 10000
     forceLimit: 210925
     target: 0
     targetVelocity: 0
@@ -6537,9 +6537,9 @@ ArticulationBody:
     target: 0
     targetVelocity: 0
     driveType: 0
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
-  m_JointFriction: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0
+  m_JointFriction: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -7638,8 +7638,8 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: 0
     upperLimit: 131
-    stiffness: 100000000
-    damping: 10000000
+    stiffness: 0
+    damping: 10000
     forceLimit: 445505
     target: 0
     targetVelocity: 0
@@ -7662,9 +7662,9 @@ ArticulationBody:
     target: 0
     targetVelocity: 0
     driveType: 0
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
-  m_JointFriction: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0
+  m_JointFriction: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -8452,8 +8452,8 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: 0
     upperLimit: 0
-    stiffness: 100000000
-    damping: 10000000
+    stiffness: 0
+    damping: 10000
     forceLimit: 68000
     target: 0
     targetVelocity: 0
@@ -8476,9 +8476,9 @@ ArticulationBody:
     target: 0
     targetVelocity: 0
     driveType: 0
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
-  m_JointFriction: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0
+  m_JointFriction: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -9802,8 +9802,8 @@ ArticulationBody:
   m_XDrive:
     lowerLimit: -123
     upperLimit: 0
-    stiffness: 20000000
-    damping: 2000000
+    stiffness: 0
+    damping: 10000
     forceLimit: 451655
     target: 0
     targetVelocity: 0
@@ -9826,9 +9826,9 @@ ArticulationBody:
     target: 0
     targetVelocity: 0
     driveType: 0
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
-  m_JointFriction: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0
+  m_JointFriction: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -10111,21 +10111,41 @@ MonoBehaviour:
     targetArticulationBody: {fileID: 1669873162}
     positiveDirectionSign: -1
     fullLeverTargetSpeedDegPerSecond: 50
+    negativeSpeedRatio: 1
+    deadbandPercent: 0
+    deadTimeSeconds: 0
+    responseTimeSeconds: 0
+    velocityResistance: 10000
   arm:
     topicName: /manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
     positiveDirectionSign: 1
     fullLeverTargetSpeedDegPerSecond: 50
+    negativeSpeedRatio: 1
+    deadbandPercent: 0
+    deadTimeSeconds: 0
+    responseTimeSeconds: 0
+    velocityResistance: 10000
   bucket:
     topicName: /manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
     positiveDirectionSign: 1
     fullLeverTargetSpeedDegPerSecond: 80
+    negativeSpeedRatio: 1
+    deadbandPercent: 0
+    deadTimeSeconds: 0
+    responseTimeSeconds: 0
+    velocityResistance: 10000
   swing:
     topicName: /manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
     positiveDirectionSign: -1
     fullLeverTargetSpeedDegPerSecond: 50
+    negativeSpeedRatio: 1
+    deadbandPercent: 0
+    deadTimeSeconds: 0
+    responseTimeSeconds: 0
+    velocityResistance: 10000
   commandTimeoutSeconds: 0.2
 --- !u!1001 &8547281186884428085
 PrefabInstance:
