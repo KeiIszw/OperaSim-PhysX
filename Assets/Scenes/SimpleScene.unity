@@ -10110,7 +10110,7 @@ MonoBehaviour:
     topicName: /manipulated_boom_lever
     targetArticulationBody: {fileID: 1669873162}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 20
     negativeSpeedRatio: 1
     deadbandPercent: 0
     deadTimeSeconds: 0
@@ -10120,7 +10120,7 @@ MonoBehaviour:
     topicName: /manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 20
     negativeSpeedRatio: 1
     deadbandPercent: 0
     deadTimeSeconds: 0
@@ -10130,7 +10130,7 @@ MonoBehaviour:
     topicName: /manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
     positiveDirectionSign: 1
-    fullLeverTargetSpeedDegPerSecond: 80
+    fullLeverTargetSpeedDegPerSecond: 50
     negativeSpeedRatio: 1
     deadbandPercent: 0
     deadTimeSeconds: 0
@@ -10140,7 +10140,7 @@ MonoBehaviour:
     topicName: /manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
     positiveDirectionSign: -1
-    fullLeverTargetSpeedDegPerSecond: 50
+    fullLeverTargetSpeedDegPerSecond: 20
     negativeSpeedRatio: 1
     deadbandPercent: 0
     deadTimeSeconds: 0
