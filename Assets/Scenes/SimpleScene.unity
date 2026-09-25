@@ -586,12 +586,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /tb20e/swing/imu
+  topicName: /TB20e/swing/imu
   frameID: 
-  sensorFrequency: 100
+  sensorFrequency: 200
   publishImuMessage: 0
   publishSelectedEulerAngle: 1
-  selectedEulerAngleTopicName: /current_swing_angle
+  selectedEulerAngleTopicName: /TB20e_0/current_swing_angle
   selectedEulerAngleAxis: 2
   publishSelectedEulerAngleInDegrees: 1
   wrapSelectedEulerAngleToSignedRange: 1
@@ -1116,7 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/thumb/cmd
+  setpointTopicName: /TB20e/thumb/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &210808438
@@ -5637,12 +5637,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /tb20e/boom/imu
+  topicName: /TB20e/boom/imu
   frameID: 
-  sensorFrequency: 100
+  sensorFrequency: 200
   publishImuMessage: 0
   publishSelectedEulerAngle: 1
-  selectedEulerAngleTopicName: /current_boom_angle
+  selectedEulerAngleTopicName: /TB20e_0/current_boom_angle
   selectedEulerAngleAxis: 0
   publishSelectedEulerAngleInDegrees: 1
   wrapSelectedEulerAngleToSignedRange: 0
@@ -6284,7 +6284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: tb20e/blade/cmd
+  setpointTopicName: /TB20e/blade/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &1267797253
@@ -6480,12 +6480,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538409}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: /tb20e/bucket/cmd
+  setpointTopicName: /TB20e/bucket/cmd
   initTargetPos: 89
   targetPositionOffsetDeg: -89
 --- !u!171741748 &1299540273
@@ -6723,7 +6723,7 @@ MonoBehaviour:
   partileRepulseDistance: 0.05
   stickForce: 20
   repulseForce: 0
-  bucketSpawnInset: 0.2
+  bucketSpawnInset: 0.25
   m_AngleOfRepose: {x: 30, y: 45}
   m_ReposeJitter: 0
   syncPeriod: 1
@@ -7605,12 +7605,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538411}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: /tb20e/boom/cmd
+  setpointTopicName: /TB20e/boom/cmd
   initTargetPos: -83
   targetPositionOffsetDeg: 83
 --- !u!171741748 &1669873162
@@ -7838,12 +7838,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /tb20e/arm/imu
+  topicName: /TB20e/arm/imu
   frameID: 
-  sensorFrequency: 100
+  sensorFrequency: 200
   publishImuMessage: 0
   publishSelectedEulerAngle: 1
-  selectedEulerAngleTopicName: /current_arm_angle
+  selectedEulerAngleTopicName: /TB20e_0/current_arm_angle
   selectedEulerAngleAxis: 0
   publishSelectedEulerAngleInDegrees: 1
   wrapSelectedEulerAngleToSignedRange: 0
@@ -8333,7 +8333,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.07
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1796672311
 Rigidbody:
@@ -8419,12 +8419,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538413}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: /tb20e/swing/cmd
+  setpointTopicName: /TB20e/swing/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &1801097604
@@ -8793,7 +8793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9225215b82caa9b345fbf6049c40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /tb20e/bucket/imu
+  topicName: /TB20e/bucket/imu
   frameID: 
   sensorFrequency: 50
   publishImuMessage: 1
@@ -8836,8 +8836,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfec2ce018781158c04555a2f9f17529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /current_bucket_angle
-  publishFrequency: 100
+  topicName: /TB20e_0/current_bucket_angle
+  publishFrequency: 200
   publishInDegrees: 1
   bucketLink: {fileID: 2014033402}
   referenceParent: {fileID: 1679348680}
@@ -9769,12 +9769,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994538410}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: /tb20e/arm/cmd
+  setpointTopicName: /TB20e/arm/cmd
   initTargetPos: 155
   targetPositionOffsetDeg: -155
 --- !u!171741748 &1994538416
@@ -9855,7 +9855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c99e00684ccb7e04d8d33f2dd431444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setpointTopicName: /tb20e/boom_swing/cmd
+  setpointTopicName: /TB20e/boom_swing/cmd
   initTargetPos: 0
   targetPositionOffsetDeg: 0
 --- !u!171741748 &1994538418
@@ -10107,7 +10107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boom:
-    topicName: /manipulated_boom_lever
+    topicName: /TB20e_0/manipulated_boom_lever
     targetArticulationBody: {fileID: 1669873162}
     positiveDirectionSign: -1
     fullLeverTargetSpeedDegPerSecond: 20
@@ -10117,7 +10117,7 @@ MonoBehaviour:
     responseTimeSeconds: 0
     velocityResistance: 10000
   arm:
-    topicName: /manipulated_arm_lever
+    topicName: /TB20e_0/manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
     positiveDirectionSign: 1
     fullLeverTargetSpeedDegPerSecond: 20
@@ -10127,7 +10127,7 @@ MonoBehaviour:
     responseTimeSeconds: 0
     velocityResistance: 10000
   bucket:
-    topicName: /manipulated_bucket_lever
+    topicName: /TB20e_0/manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
     positiveDirectionSign: 1
     fullLeverTargetSpeedDegPerSecond: 50
@@ -10137,7 +10137,7 @@ MonoBehaviour:
     responseTimeSeconds: 0
     velocityResistance: 10000
   swing:
-    topicName: /manipulated_swing_lever
+    topicName: /TB20e_0/manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
     positiveDirectionSign: -1
     fullLeverTargetSpeedDegPerSecond: 20
