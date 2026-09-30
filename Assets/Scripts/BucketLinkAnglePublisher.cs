@@ -74,6 +74,18 @@ public class BucketLinkAnglePublisher : MonoBehaviour
     private Float64Msg message;
     private string preprocessedTopicName;
     private double lastPublishTime;
+    private double lastPublishRealtime;
+    private double lastPhysicsRealtime;
+    private long publishCount;
+    private bool diagnosticStarted;
+
+    private void OnDisable()
+    {
+        if (diagnosticStarted)
+            Debug.LogWarning($"[BucketFeedback] publisher disabled: topic={preprocessedTopicName}, " +
+                $"count={publishCount}, utc={System.DateTime.UtcNow:O}", this);
+        diagnosticStarted = false;
+    }
 
     private float PublishInterval => 1.0f / Mathf.Max(publishFrequency, 0.001f);
 
@@ -90,6 +102,21 @@ public class BucketLinkAnglePublisher : MonoBehaviour
 
     private void FixedUpdate()
     {
+        double realtime = Time.realtimeSinceStartupAsDouble;
+        if (!diagnosticStarted)
+        {
+            lastPhysicsRealtime = lastPublishRealtime = realtime;
+            diagnosticStarted = true;
+            Debug.Log($"[BucketFeedback] publisher running: topic={preprocessedTopicName}, " +
+                $"utc={System.DateTime.UtcNow:O}", this);
+        }
+        double physicsGap = realtime - lastPhysicsRealtime;
+        lastPhysicsRealtime = realtime;
+        if (physicsGap > 0.25)
+            Debug.LogWarning($"[BucketFeedback] physics gap={physicsGap:F3}s, " +
+                $"topic={preprocessedTopicName}, count={publishCount}, " +
+                $"timeScale={Time.timeScale}, utc={System.DateTime.UtcNow:O}", this);
+
         double now = Clock.time;
         if (now - lastPublishTime < PublishInterval)
             return;
@@ -114,6 +141,14 @@ public class BucketLinkAnglePublisher : MonoBehaviour
         message.data = latestPublishedAngle;
 
         ros.Publish(preprocessedTopicName, message);
+        double publishGap = realtime - lastPublishRealtime;
+        if (publishGap > 0.25)
+            Debug.LogWarning($"[BucketFeedback] publish gap={publishGap:F3}s, " +
+                $"physicsGap={physicsGap:F3}s, topic={preprocessedTopicName}, " +
+                $"angle={message.data:F6}, count={publishCount}, " +
+                $"utc={System.DateTime.UtcNow:O}", this);
+        lastPublishRealtime = realtime;
+        publishCount++;
         lastPublishTime = now;
     }
 
