@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// TB20e のレバー操作量を受信し、レバー→速度のアクチュエータ近似で各作業機を動かす。
-/// 位置サーボは使わず、有限の速度抵抗と力上限だけを ArticulationDrive に設定する。
+/// 操作中は速度駆動、中立時は任意の位置保持で油圧ロックを近似する。
 /// </summary>
 public class Tb20eLeverController : MonoBehaviour
 {
@@ -43,6 +43,19 @@ public class Tb20eLeverController : MonoBehaviour
         [Min(0.0f)]
         [Tooltip("速度差→駆動トルクの係数（xDrive.damping）。油圧抵抗の近似。0なら駆動力も出ない。未校正。")]
         public float velocityResistance = 10000.0f;
+
+        [Tooltip("中立・指令途絶・非常停止時に、その時点の角度を有限の力で保持する。")]
+        public bool neutralHoldEnabled = true;
+
+        [Min(0.0f)]
+        [Tooltip("中立保持の位置ゲイン。保持力は既存 xDrive.forceLimit で制限される。未校正。")]
+        public float neutralHoldStiffness = 200000.0f;
+
+        [NonSerialized]
+        internal bool isHolding;
+
+        [NonSerialized]
+        internal float holdPositionDegrees;
 
         [NonSerialized]
         internal readonly Tb20eActuatorResponse response = new Tb20eActuatorResponse();
@@ -133,6 +146,9 @@ public class Tb20eLeverController : MonoBehaviour
     private void OnDisable()
     {
         InvalidateAllCommands();
+        // Recapture the actual pose on re-enable, even if moved while disabled.
+        foreach (var axis in new[] { boom, arm, bucket, swing })
+            if (axis != null) axis.isHolding = false;
     }
 
     private void SubscribeAxis(LeverAxis axis, string axisName)
@@ -199,6 +215,14 @@ public class Tb20eLeverController : MonoBehaviour
             return;
         }
 
+        if (Mathf.Abs(axis.latestLeverInput) <= axis.deadbandPercent)
+        {
+            // Closing the valve cancels pending flow; do not replay delayed motion.
+            axis.response.Reset();
+            SetNeutral(axis);
+            return;
+        }
+
         float velocity = (float)axis.response.Step(now, Time.fixedDeltaTime,
             axis.latestLeverInput, axis.deadbandPercent, axis.deadTimeSeconds,
             axis.responseTimeSeconds, axis.fullLeverTargetSpeedDegPerSecond,
@@ -221,8 +245,46 @@ public class Tb20eLeverController : MonoBehaviour
         return !float.IsNaN(value) && !float.IsInfinity(value) && value >= 0;
     }
 
+    private static void SetNeutral(LeverAxis axis)
+    {
+        var body = axis.targetArticulationBody;
+        if (body == null) return;
+        if (!axis.neutralHoldEnabled || body.dofCount != 1
+            || !FiniteNonnegative(axis.neutralHoldStiffness)
+            || axis.neutralHoldStiffness <= 0)
+        {
+            SetVelocity(axis, 0);
+            return;
+        }
+
+        var drive = body.xDrive;
+        if (!axis.isHolding)
+        {
+            float position = body.jointPosition[0] * Mathf.Rad2Deg;
+            if (float.IsNaN(position) || float.IsInfinity(position))
+            {
+                SetVelocity(axis, 0);
+                return;
+            }
+            axis.holdPositionDegrees = body.twistLock == ArticulationDofLock.LimitedMotion
+                ? Mathf.Clamp(position, drive.lowerLimit, drive.upperLimit) : position;
+            axis.isHolding = true;
+        }
+        drive.driveType = ArticulationDriveType.Force;
+        drive.target = axis.holdPositionDegrees;
+        drive.targetVelocity = 0;
+        drive.stiffness = axis.neutralHoldStiffness;
+        drive.damping = FiniteNonnegative(axis.velocityResistance) ? axis.velocityResistance : 0;
+        // Preserve the scene's finite force limit; holding may yield under overload.
+        body.xDrive = drive;
+        body.linearDamping = 0;
+        body.angularDamping = 0;
+        body.jointFriction = 0;
+    }
+
     private static void SetVelocity(LeverAxis axis, float velocity)
     {
+        axis.isHolding = false;
         if (axis.targetArticulationBody == null) return;
         var body = axis.targetArticulationBody;
         var drive = body.xDrive;
@@ -251,7 +313,7 @@ public class Tb20eLeverController : MonoBehaviour
             return;
 
         axis.response.Reset();
-        SetVelocity(axis, 0);
+        SetNeutral(axis);
         axis.latestLeverInput = 0.0f;
         axis.hasReceivedMessage = false;
     }

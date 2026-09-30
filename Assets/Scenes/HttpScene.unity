@@ -9743,6 +9743,8 @@ MonoBehaviour:
     deadTimeSeconds: 0
     responseTimeSeconds: 0
     velocityResistance: 10000
+    neutralHoldEnabled: 1
+    neutralHoldStiffness: 200000
   arm:
     topicName: /manipulated_arm_lever
     targetArticulationBody: {fileID: 1994538416}
@@ -9753,6 +9755,8 @@ MonoBehaviour:
     deadTimeSeconds: 0
     responseTimeSeconds: 0
     velocityResistance: 10000
+    neutralHoldEnabled: 1
+    neutralHoldStiffness: 200000
   bucket:
     topicName: /manipulated_bucket_lever
     targetArticulationBody: {fileID: 1299540273}
@@ -9763,6 +9767,8 @@ MonoBehaviour:
     deadTimeSeconds: 0
     responseTimeSeconds: 0
     velocityResistance: 10000
+    neutralHoldEnabled: 1
+    neutralHoldStiffness: 200000
   swing:
     topicName: /manipulated_swing_lever
     targetArticulationBody: {fileID: 1801097604}
@@ -9773,6 +9779,8 @@ MonoBehaviour:
     deadTimeSeconds: 0
     responseTimeSeconds: 0
     velocityResistance: 10000
+    neutralHoldEnabled: 1
+    neutralHoldStiffness: 200000
   commandTimeoutSeconds: 0.2
 --- !u!1 &1994538407 stripped
 GameObject:
