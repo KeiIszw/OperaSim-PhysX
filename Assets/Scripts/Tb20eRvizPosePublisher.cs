@@ -7,7 +7,10 @@ using RosMessageTypes.Std;
 
 public class Tb20eRvizPosePublisher : MonoBehaviour
 {
-    public string topic = "/TB20e_0/rviz_mesh_poses";
+    public string topic = "/TB20e_0/rviz_link_poses";
+    private const string ConfigTopic = "/TB20e_0/rviz_mesh_config";
+    private const string RequestTopic = "/TB20e_0/rviz_mesh_config_request";
+    private Transform[] links;
     private Transform root;
     private Transform[] targets;
     private ROSConnection ros;
@@ -339,25 +342,66 @@ public class Tb20eRvizPosePublisher : MonoBehaviour
         }
         targets = targets.Where((t, i) => !omitted.Contains(i)).ToArray();
         ros = ROSConnection.GetOrCreateInstance();
+        string[] names = { "body_link", "swing_link", "boom_link", "arm_link", "bucket_link" };
+        links = names.Select(name => root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name)).ToArray();
+        if (links.Any(t => t == null)) { Debug.LogError("RViz five-link mapping missing: " + string.Join(",", Enumerable.Range(0,5).Where(i => links[i] == null).Select(i => names[i]))); enabled=false; return; }
+        // Only moving ancestors of visible meshes need a streamed pose.
+        var moving = descendants.Where(t => t != root && t.gameObject.activeInHierarchy &&
+            ((t.GetComponent<ArticulationBody>() != null && t.GetComponent<ArticulationBody>().enabled &&
+              t.GetComponent<ArticulationBody>().jointType != ArticulationJointType.FixedJoint) ||
+             t.GetComponents<Component>().Any(c => c is UnityEngine.Animations.IConstraint constraint &&
+                 c is Behaviour behaviour && behaviour.enabled && constraint.constraintActive && constraint.weight > 0)));
+        var ikTargets = root.GetComponentsInChildren<IKFix>().Where(c => c.isActiveAndEnabled && c.target != null)
+            .Select(c => c.target).Where(t => t.IsChildOf(root));
+        var candidates = links.Concat(moving).Concat(ikTargets).Distinct().ToArray();
+        var owners = targets.Select(target => {
+            for (var t = target; t != null && t != root; t = t.parent)
+                if (candidates.Contains(t)) return t;
+            return null;
+        }).ToArray();
+        links = links.Concat(candidates.Where(t => !links.Contains(t) && owners.Contains(t))
+            .OrderBy(t => FullPath(t), StringComparer.Ordinal)).ToArray();
+        System.IO.Directory.CreateDirectory("Logs");
+        System.IO.File.WriteAllText("Logs/Tb20eRvizMovingLinks.txt",
+            string.Join("\n", links.Select((t, i) => i + " | " + FullPath(t))));
+        Debug.Log("RViz streaming " + links.Length + " independently moving links; see Logs/Tb20eRvizMovingLinks.txt");
         ros.RegisterPublisher<Float64MultiArrayMsg>(topic);
+        ros.RegisterPublisher<Float64MultiArrayMsg>(ConfigTopic);
+        ros.Subscribe<BoolMsg>(RequestTopic, msg => { if (msg.data) PublishConfig(); });
         Debug.Log("RViz pose publisher mapped " + targets.Length + " meshes");
+    }
+    private static void WritePose(double[] data, int k, Transform reference, Transform target, bool meshCorrection)
+    {
+        RosMessageTypes.Geometry.PointMsg pos = reference.InverseTransformPoint(target.position).To<FLU>();
+        RosMessageTypes.Geometry.QuaternionMsg qmsg = (Quaternion.Inverse(reference.rotation) * target.rotation).To<FLU>();
+        var q = new Quaternion((float)qmsg.x, (float)qmsg.y, (float)qmsg.z, (float)qmsg.w);
+        if (meshCorrection) q *= new Quaternion(0,0,Mathf.Sin(Mathf.PI/4),Mathf.Cos(Mathf.PI/4));
+        data[k]=pos.x;data[k+1]=pos.y;data[k+2]=pos.z;
+        data[k+3]=q.x;data[k+4]=q.y;data[k+5]=q.z;data[k+6]=q.w;
+    }
+    private void PublishConfig()
+    {
+        var data = new double[1 + targets.Length * 8];
+        data[0] = links.Length;
+        for (int i=0;i<targets.Length;i++)
+        {
+            int owner=-1;
+            for (var t=targets[i];t!=null && t!=root;t=t.parent)
+            {
+                int index=Array.IndexOf(links,t);
+                if(index>=0) {owner=index;break;}
+            }
+            data[1+i*8]=owner;
+            WritePose(data,1+i*8+1,owner<0?root:links[owner],targets[i],true);
+        }
+        var msg=new Float64MultiArrayMsg();msg.data=data;ros.Publish(ConfigTopic,msg);
     }
     private void LateUpdate()
     {
         if (Time.realtimeSinceStartup < next) return;
-        next = Time.realtimeSinceStartup + 0.05f;
-        var data = new double[targets.Length * 7];
-        // STL local axes (FBX x,-z,y) to imported Unity mesh FLU axes (z,x,y).
-        var correction = new Quaternion(0, 0, Mathf.Sin(Mathf.PI/4), Mathf.Cos(Mathf.PI/4));
-        for (int i = 0; i < targets.Length; i++)
-        {
-            var pos = (RosMessageTypes.Geometry.PointMsg)root.InverseTransformPoint(targets[i].position).To<FLU>();
-            RosMessageTypes.Geometry.QuaternionMsg qmsg = (Quaternion.Inverse(root.rotation) * targets[i].rotation).To<FLU>();
-            var q = new Quaternion((float)qmsg.x,(float)qmsg.y,(float)qmsg.z,(float)qmsg.w) * correction;
-            int k = i*7;
-            data[k]=pos.x;data[k+1]=pos.y;data[k+2]=pos.z;
-            data[k+3]=q.x;data[k+4]=q.y;data[k+5]=q.z;data[k+6]=q.w;
-        }
-        var msg = new Float64MultiArrayMsg(); msg.data = data; ros.Publish(topic,msg);
+        next=Time.realtimeSinceStartup+0.05f;
+        var data=new double[links.Length*7];
+        for(int i=0;i<links.Length;i++) WritePose(data,i*7,root,links[i],false);
+        var msg=new Float64MultiArrayMsg();msg.data=data;ros.Publish(topic,msg);
     }
 }
