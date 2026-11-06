@@ -7445,8 +7445,8 @@ MonoBehaviour:
   bucketObjectName: bucket_link
   enable: 1
   particleVisualRadius: 0.07
-  partileStickDistance: 0.01
-  partileRepulseDistance: 0.05
+  partileStickDistance: 0.05
+  partileRepulseDistance: 0.1
   stickForce: 20
   repulseForce: 0
   bucketSpawnInset: 0.25
@@ -9135,7 +9135,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b94113b6662f242b88a393d5901c9f6a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
